@@ -5,7 +5,7 @@ int main()
 {
     int n;
     scanf("%d",&n);
-    if (n<6)
+    if (n<8)
         printf("0");
     else
         printf("%d",n/2-n/4-1);
