@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "gcc.exe debug",
+            "command": "D:\\SOFTWARE\\MinGW\\bin\\gcc.exe",
+            "args": [
+                //"-fexec-charset=GBK",//这行参数可以指定可执行程序的编码方式，生成GBK编码的文件，默认UTF8在cmd窗口中会出现乱码
+                "-g",
+                "${file}",
+                "-o",
+                "D:\\Study\\C\\exe\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "编译器: D:\\SOFTWARE\\MinGW\\bin\\gcc.exe"
+        }
+    ]
+}
