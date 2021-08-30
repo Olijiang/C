@@ -328,6 +328,23 @@ int *NodeLink(BTNode *tree, BTNode **head, BTNode **tail)
 
 }
 
+int stack[20];
+int top = -1;
+void PrintPath(BTNode *tree, int k)
+{	//先序遍历
+	if (tree!=NULL)
+	{
+		stack[++top]= tree->data;
+		if (tree->data==k)
+			for (int i = 0; i <= top; i++)
+				printf("%d ",stack[i]);
+		PrintPath(tree->lch, k);
+		PrintPath(tree->rch, k);
+		top--;
+	}
+}
+
+
 int main(int argc, char const *argv[])
 {
 	int a[] = {55,31,64,8,24,79,93,43,18,84,57,5};
@@ -340,11 +357,13 @@ int main(int argc, char const *argv[])
 	BTNode *bt = CreatBT(pre, in ,0,11,0,11);
 
 
-	postorder1(bt);
+	level(bt);
 	printf("\n");
-	postorder1(yo);
+	//postorder1(yo);
+	//printf("\n");
+	PrintPath(bt, 18);
 
-	printf("\n\ndeepth:%d\n", GetDeepth(yo));
+/* 	printf("\n\ndeepth:%d\n", GetDeepth(yo));
 	printf("wedth:%d\n", GetWidth(yo));
 	printf("wedth2:%d\n", GetWidth2(yo));
 	printf("lenth:%d\n", getLenth(yo));
@@ -358,7 +377,7 @@ int main(int argc, char const *argv[])
 		printf("%d  ", head->data);
 		head = head->rch;
 	}printf("%d\n", head->data);
-	
+	 */
 	return 0;
 
 }

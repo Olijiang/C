@@ -72,17 +72,26 @@ void ShellSort(int a[])
 	}
 }
 
-void BubbleSort(int a[])
+int BubbleSort(int *a, int n)
 {
 	int i, j, temp;
+    int flag=1;
 	for (i = 0; i < n; ++i)
-		for (j = 0; j < n-i; ++j)
+    {
+        flag=0;
+		for (j = 0; j < n-i-1; ++j)
+        {
+            if(a[j]==a[j+1]) return 1;
 			if (a[j]>a[j+1])
 			{
+                flag=1;
 				temp = a[j];
 				a[j] = a[j+1];
 				a[j+1] = temp;
 			}
+        }
+        if(!flag) return 0;
+    }
 }
 
 
@@ -140,8 +149,8 @@ int main()
 	//InsertSort(a);
 	//HalfSort(a);
 	//ShellSort(a);
-	//BubbleSort(a);
-	QuickSort(a,0,n);
+	BubbleSort(a, n);
+	//QuickSort(a,0,n);
 	ReverseT(a);
 	Show(a);
 	return 0;

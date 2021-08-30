@@ -2,29 +2,45 @@
 #include <stdlib.h>
 
 #define N 20
+int Qsort(int* nums, int L, int H, int flag);
 
+
+int containsDuplicate(int* nums, int numsSize){
+    int flag = 0;
+
+    if(Qsort(nums, 0, numsSize-1, flag)) return 1;;
+    return 0;
+}
+
+int Qsort(int* nums, int L, int H, int flag)
+{
+    if(L>=H) return 0;
+    if (flag) return flag;
+    
+    int i=L, j=H;
+    int temp = nums[L];
+    while(i<j)
+    {
+        if (nums[j]==temp) flag = 1;
+        while(i<j && nums[j]>=temp) j--;
+        nums[i] = nums[j];
+        while(i<j && nums[i]<temp) i++;
+        nums[j] = nums[i];
+    }
+    nums[i] = temp;
+    Qsort(nums, L, i-1, flag);
+    Qsort(nums, i+1, H, flag);
+    return flag;
+}
 int main()
 {
-    int a,b;
-    int n=0;
-    int ma[N][2];
-    while (scanf("%d %d",&a,&b)){
-        if (a==0 && b==0) break;
-        ma[n][0] = a;
-        ma[n][1] = b;
-        n++;
-    }
+
+    int nums[] = {1,5,-2,4,0};
+    int numsSize = 5;
+    int flag = containsDuplicate(nums, numsSize);
+    if (flag) printf ("true");
+    else printf("false");
     
-    int count=0;
-    while (scanf("%d %d",&a,&b)){
-        if (a==0 && b==0) break;
-        for (int j = a; j <= b; j++){
-            count=0;
-            for (int i = 0; i < n; i++)
-                if (ma[i][0]<=j && ma[i][1]>=j)
-                    count++;
-            printf("%d\n",count);
-        }
-    }
+    
     return 0;
 }
