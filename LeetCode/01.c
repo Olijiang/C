@@ -45,10 +45,9 @@ void containsDuplicate()
 }
 
 
-
 int main()
 {
     containsDuplicate();
-
+    printf("yes");
     return 0;
 }
