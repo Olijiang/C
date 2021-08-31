@@ -107,18 +107,19 @@ void level(BTNode *tree)
 			rear = (rear+1)%10;
 			que[rear] = que[front]->rch;
 		}
-		
 	}
 }
 
 int GetWidth(BTNode *tree)
 {
+	// 获取树的最大宽度，队列辅助
 	if (tree==NULL)	return 0;
 
-	st que[10];		//队列，包含一个节点地址和层高标记
+	st que[10];			//队列，包含一个节点地址和层高标记
 	int front=0,rear=1;
-	int no=0,a=0;		//no为宽度计数器，a为层高计数器
-	int w[10];			//用来记录每层的宽度
+	int no=0;			//no用来暂存出队节点层高
+	int w[10]={0};		//用来记录每层的宽度
+
 	que[1].p = tree;	//根节点入队
 	que[1].n = 1;		//根节点层高为1
 
@@ -126,7 +127,8 @@ int GetWidth(BTNode *tree)
 	{
 		front = (front+1)%10;
 		//printf("%d\n", que[front].p->data);
-		no++;
+		no = que[front].n;
+		w[no]++;		//每次出队当前层的节点数量+1
 
 		if (que[front].p->lch!=NULL)
 		{
@@ -140,61 +142,40 @@ int GetWidth(BTNode *tree)
 			que[rear].p = que[front].p->rch;
 			que[rear].n = que[front].n+1;
 		}
-		if (que[front].n!=que[(front+1)%10].n)
-		{
-			w[a++] = no;
-			no=0;
-		}
 	}
 	int max = w[0];
-	for (int i = 0; i < a; ++i)
+	for (int i = 0; i <= no; ++i)
 		max = (max>w[i])?max:w[i];
 	return max;
 }
 
+
 int GetWidth2(BTNode *tree)
 {
-	if (tree==NULL)	return 0;
-
-	st que[10];		//队列，包含一个节点地址和层高标记
-	int front=0,rear=1;
-	int no=0;		//no为层高度计数器
-	int w[10]={0};			//用来记录每层的宽度
+	//遍历方法
+	static int width[10]={0};
+	static int n=0;
 	if (tree!=NULL)
 	{
-		que[1].p = tree;	//根节点入队
-		que[1].n = 1;		//根节点层高为1
-
-		while(front!=rear)
+		n++;
+		width[n]++;
+		GetWidth2(tree->rch);
+		GetWidth2(tree->lch);
+		n--;
+		if (n==0)
 		{
-			front = (front+1)%10;
-			//printf("%d\n", que[front].p->data);
-			no = que[front].n;
-			w[no]++;		//每次出队当前层的节点数量+1
-
-			if (que[front].p->lch!=NULL)
-			{
-				rear = (rear+1)%10;
-				que[rear].p = que[front].p->lch;
-				que[rear].n = (que[front].n)+1;
-			}
-			if (que[front].p->rch!=NULL)
-			{
-				rear = (rear+1)%10;
-				que[rear].p = que[front].p->rch;
-				que[rear].n = que[front].n+1;
-			}
+			int max = width[1];
+			for (int i = 1; width[i] > 0; ++i)
+				max = (max>width[i])?max:width[i];
+			return max;
 		}
-		int max = w[0];
-		for (int i = 0; i <= no; ++i)
-			max = (max>w[i])?max:w[i];
-		return max;
 	}
 }
 
 
 int GetDeepth(BTNode *tree)
 {	
+	// 获取树的深度
 	int LD, RD;
 	if (tree==NULL)
 		return 0;
@@ -281,7 +262,7 @@ BTNode *CreatBT(int pre[], int in[], int p1,int p2,int i1 ,int i2)
 
 int  getLenth(BTNode *tree)
 {
-	//节点个数
+	//总节点个数
 	static int n;
 	if(tree==NULL) return 0;
 
@@ -305,7 +286,6 @@ int  getSubLenth(BTNode *tree)
 
 int *NodeLink(BTNode *tree, BTNode **head, BTNode **tail)
 {
-
 	//将叶子节点从左往右连成一个链表
 	if (tree==NULL) return 0;
 
@@ -322,10 +302,8 @@ int *NodeLink(BTNode *tree, BTNode **head, BTNode **tail)
 			(*tail) = tree;
 		}
 	}
-
 	NodeLink(tree->lch, &(*head), &(*tail));
 	NodeLink (tree->rch, &(*head), &(*tail));
-
 }
 
 int stack[20];
@@ -361,11 +339,11 @@ int main(int argc, char const *argv[])
 	printf("\n");
 	//postorder1(yo);
 	//printf("\n");
-	PrintPath(bt, 18);
-
-/* 	printf("\n\ndeepth:%d\n", GetDeepth(yo));
+	//PrintPath(bt, 18);
 	printf("wedth:%d\n", GetWidth(yo));
 	printf("wedth2:%d\n", GetWidth2(yo));
+/* 	printf("\n\ndeepth:%d\n", GetDeepth(yo));
+	printf("wedth:%d\n", GetWidth(yo));
 	printf("lenth:%d\n", getLenth(yo));
 	printf("Sublenth:%d\n", getSubLenth(yo));
 
