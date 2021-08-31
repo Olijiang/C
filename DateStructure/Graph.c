@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #define maxsize 8
 
-
 //本部分主要包括邻接矩阵，邻接表的生成 和 图的深度遍历DFS 图的宽度遍历BDF
 
 //图为不带权值的 有向图 和 无向图
@@ -31,6 +30,9 @@ typedef struct
 	int v,e; //当前顶点的顶点数和边数
 }AGraph;	//邻接表
 
+
+int DetectCircle(AGraph *G, int v);// 基于DFS 检测有向图中是否存在环路;
+void DetectPath(AGraph *G, int v, int j, int d, int L) ;//检测 i， j 点之间是否存在长度为 L 的路径 
 /*  无向表
        1 2 3 4 5 6 7 8
 	1 {0,1,0,1,1,0,0,0},
@@ -70,10 +72,10 @@ int DiEdge[maxsize][maxsize]={
 	{0,0,0,0,0,1,0,0},
 	{0,1,0,0,0,0,0,0},
 	{0,0,0,0,0,0,1,0},
-	{0,0,0,0,0,0,0,1},
+	{1,0,0,0,0,0,0,1},
 	{0,0,0,0,0,0,0,0},
 	{0,0,0,0,1,0,0,1},
-	{0,0,1,0,0,0,0,0}};
+	{0,0,1,0,0,0,1,0}};
 
 void InitMGraph(MGraph *G, int Edge[maxsize][maxsize])
 {
@@ -145,6 +147,7 @@ void DispalyAGraph(AGraph *G)
 		}
 		printf("\n");
 	}
+	printf("-------------over\n");
 }
 
 void DFS(AGraph *G, int v)
@@ -211,13 +214,13 @@ void BFS(AGraph *G, int v)
 			p = p->nextarc;
 		}
 	}
-	printf("The last%d\n", queue[front-1]);
+	//printf("The last%d\n", queue[front-1]);
 }
 
 
 int HaveEdge(AGraph *G, int v, int j)
 {
-	//v在这里表示顶点的序号
+	//检测 i j 之间是否存在路径
 	static int Visit[maxsize] = {0};
 	ArcNode *p = G->Adjlist[v-1].firstarc;
 	Visit[v-1] = 1;
@@ -233,34 +236,107 @@ int HaveEdge(AGraph *G, int v, int j)
 	return 0;
 }
 
+
+//采用全局的visit[] 和 path[];
+void DetectPath(AGraph *G, int v, int j, int d, int L)
+{
+	//检测 i， j 点之间是否存在长度为 L 的路径 
+	//采用回溯 DFS 算法
+	//d 初始为 0;
+	ArcNode *p = G->Adjlist[v-1].firstarc;
+	visit[v-1] = 1;
+	path[d] = v;
+
+	if (v==j && d==L)
+	{
+		for (int i = 0; i <= d; i++)
+			printf("%d ",path[i]);
+		printf("\n");
+	}
+	d++;
+	while(p!=NULL)
+	{
+		//if (!visit[p->vex-1] || p->vex==j)	//检测 v==j 时的路径，即包含 j 的环路，若存在环路，则遍历会回到 j，此时visit肯定标记为1，需要强制访问；
+			//DetectPath(G,p->vex,j,d,L);
+		
+		if (!visit[p->vex-1])		//检测 v j 不同时的路径
+			DetectPath(G,p->vex,j,d,L);
+		p = p->nextarc;
+	}
+	//退出时将visit释放
+	visit[v-1]=0;
+	--d;
+} 
+
+
+
+int DetectCircle(AGraph *G, int v)
+{
+	if (flag) return 1;	//对遍历进行截支，满足条件之间返回，不再继续遍历
+	// 基于DFS 检测有向图中是否存在环路;
+	ArcNode *p = G->Adjlist[v-1].firstarc;
+	visit[v-1] = 1;
+	finished[v-1] = 0;
+	while(p!=NULL)
+	{
+		if (visit[p->vex-1]==1 && finished[p->vex-1]==0) flag=1;// finished[i]=0表示还在本轮遍历之中，再次访问到自己说明存在环路
+		else if(visit[p->vex-1]==0)
+		{
+			DetectCircle(G,p->vex);
+			finished[p->vex-1]=1;
+		}
+		p = p->nextarc;
+	}
+	if (flag) return 1;
+	return 0;
+}
+
+int visit[8];
+int path[8];
+int finished[8];// 初始为全 1，为0时表示该元素处于本轮的遍历之中
+int flag = 0;
+void init()
+{
+	for (int i = 0; i < 8; i++) finished[i] =1;
+	for (int i = 0; i < 8; i++) visit[i] =1;
+	flag = 0;
+}
+
 int main()
 {
+	
 	MGraph Myo;
 	InitMGraph(&Myo, UnEdge);
 	//printf("Undirected MGraph\n");
 	//DisplayMGraph(Myo);
 	//printf("---------------------\n");
 	MGraph DiMyo;
-	//InitMGraph(&DiMyo, DiEdge);
+	InitMGraph(&DiMyo, DiEdge);
 	//printf("Directed MGraph\n");
 	//DisplayMGraph(DiMyo);
 
 	//printf("---------------------\n");
-	AGraph *Ayo = InitAGraph(Myo);
+	AGraph *Ayo = InitAGraph(DiMyo);
 	printf("Undirected AGraph\n");
 	DispalyAGraph(Ayo);
+	DetectPath(Ayo, 1, 8, 0, 4);
+
+/* 	for (int i = 0; i < 8; i++) visit[i] =0;
+	if(DetectCircle(Ayo, 5)) printf("yes");
+	else printf("None"); */
+
 	//printf("---------------------\n");
 	//AGraph *DiAyo = InitAGraph(DiMyo);
 	//printf("Directed AGraph\n");
 	//DispalyAGraph(DiAyo);
-	printf("\nDFS---------------------\n");
+/* 	printf("\nDFS---------------------\n");
 	DFS(Ayo,2);
 	printf("\nDFS1---------------------\n");
 	DFS1(Ayo,2);
 	printf("\nBFS---------------------\n");
-	BFS(Ayo,2);
+	BFS(Ayo,2); */
 
-	printf("%s\n", HaveEdge(Ayo, 1 ,5 )?("Exist 1-5"):("Not Exist 1-5"));
+	//printf("%s\n", HaveEdge(Ayo, 1 ,5 )?("Exist 1-5"):("Not Exist 1-5"));
 
 	return 0;
 }
