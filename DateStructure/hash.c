@@ -6,18 +6,18 @@
 const int MaxSize = 1000;
 const int MOD = 986;
 
-typedef struct user{    //  æ¯ä¸ªç”¨æˆ·çš„æ•°æ®ç»“æ„ã€‚
+typedef struct user{    //  Ã¿¸öÓÃ»§µÄÊı¾İ½á¹¹¡£
     char name[20];
     char tel_num[13];
 }User;
 
-typedef struct Node{    //  hashè¡¨å†…æ¯ä¸ªç»“ç‚¹çš„æ•°æ®ç»“æ„ã€‚
+typedef struct Node{    //  hash±íÄÚÃ¿¸ö½áµãµÄÊı¾İ½á¹¹¡£
     User user;
     struct Node *next;
 }LNode, *Linklist;
 
 
-int ELFhash(char *key){      // hashå‡½æ•°ï¼šè‘—åçš„ELFhashç®—æ³•ã€‚
+int ELFhash(char *key){      // hashº¯Êı£ºÖøÃûµÄELFhashËã·¨¡£
     unsigned long h = 0;
     while(*key){
         h = (h<<4) + *key++;
@@ -29,7 +29,7 @@ int ELFhash(char *key){      // hashå‡½æ•°ï¼šè‘—åçš„ELFhashç®—æ³•ã€‚
 }
 
 
-void add_date(LNode **tail, char *name, char *tel_num){   //  å°¾æ’æ³•å°†æ•°æ®æ·»åŠ åˆ°é“¾è¡¨ï¼Œå¹¶å°†tailæŒ‡å‘æœ€æ–°çš„èŠ‚ç‚¹
+void add_date(LNode **tail, char *name, char *tel_num){   //  Î²²å·¨½«Êı¾İÌí¼Óµ½Á´±í£¬²¢½«tailÖ¸Ïò×îĞÂµÄ½Úµã
     LNode *p = NULL;
     p = (LNode *)malloc(sizeof(LNode));
     strcpy(p->user.name, name);
@@ -40,14 +40,14 @@ void add_date(LNode **tail, char *name, char *tel_num){   //  å°¾æ’æ³•å°†æ•°æ®
 }
 
 
-void add_record(char *name, LNode *tail, LNode *hashtable[]){   // è®¡ç®—nameçš„hashå€¼ï¼Œä»¥hashå€¼ä¸ºæ•°ç»„ä¸‹æ ‡å‚¨å­˜æ•°æ®Nodeåœ°å€
+void add_record(char *name, LNode *tail, LNode *hashtable[]){   // ¼ÆËãnameµÄhashÖµ£¬ÒÔhashÖµÎªÊı×éÏÂ±ê´¢´æÊı¾İNodeµØÖ·
     int key = ELFhash(name);
     hashtable[key] = tail;
 }
 
 
 
-char *query(char *name, LNode *hashtable[]){        //  è®¡ç®—è¦æŸ¥è¯¢nameçš„hashå€¼ï¼Œç„¶åhashè¡¨æ•°ç»„ä¸­åˆ¤æ–­å¯¹åº”ä¸‹æ ‡æ˜¯å¦å­˜åœ¨
+char *query(char *name, LNode *hashtable[]){        //  ¼ÆËãÒª²éÑ¯nameµÄhashÖµ£¬È»ºóhash±íÊı×éÖĞÅĞ¶Ï¶ÔÓ¦ÏÂ±êÊÇ·ñ´æÔÚ
     int key = ELFhash(name);
     if(hashtable[key]!=NULL) return hashtable[key]->user.tel_num;
     return NULL;
@@ -56,11 +56,11 @@ char *query(char *name, LNode *hashtable[]){        //  è®¡ç®—è¦æŸ¥è¯¢nameçš„ha
 
 
 int main(){
-    LNode *hashtable[MaxSize];    // hashè¡¨æŒ‡é’ˆæ•°ç»„
-    // é“¾è¡¨åˆå§‹åŒ–
+    LNode *hashtable[MaxSize];    // hash±íÖ¸ÕëÊı×é
+    // Á´±í³õÊ¼»¯
     memset(hashtable,0,sizeof(hashtable));
-    Linklist head = NULL; //å¤´ç»“ç‚¹
-    Linklist tail = NULL; //å°¾ç»“ç‚¹
+    Linklist head = NULL; //Í·½áµã
+    Linklist tail = NULL; //Î²½áµã
     head = (LNode *)malloc(sizeof(LNode));
     tail = head;
     int i;
@@ -68,21 +68,21 @@ int main(){
     char names[][8] = {"ming", "huang", "tian", "zheng", "qi", "yun", "wang"};
     char tel_nums[][13] = {"13959869247", "15196227587", "17396914413", "15456897789", "13565488896", "13664851136", "993745"};
 
-    // é“¾è¡¨åŠhashè¡¨çš„åˆå§‹åŒ–
+    // Á´±í¼°hash±íµÄ³õÊ¼»¯
     for(i = 0; i < 7; i++){
         strcpy(name, names[i]);
         strcpy(tel_num, tel_nums[i]);
-        add_date(&tail, name, tel_num);//æ­¤å¤„éœ€è¦ä¼ å…¥å°¾æŒ‡é’ˆçš„åœ°å€æ‰èƒ½å¯¹ tail å€¼åšæœ‰æ•ˆä¿®æ”¹
+        add_date(&tail, name, tel_num);//´Ë´¦ĞèÒª´«ÈëÎ²Ö¸ÕëµÄµØÖ·²ÅÄÜ¶Ô tail Öµ×öÓĞĞ§ĞŞ¸Ä
         add_record(name, tail, hashtable);
     }
 
     while(1){
-        printf("è¯·è¾“å…¥è¦æŸ¥è¯¢çš„ç”¨æˆ·å(æŒ‰0é€€å‡º): ");
+        printf("ÇëÊäÈëÒª²éÑ¯µÄÓÃ»§Ãû(°´0ÍË³ö): ");
         scanf("%s",name);
-        if(!strcmp(name,"0")) break;// 0 ä½œä¸ºç»“æŸæ ‡å¿—
+        if(!strcmp(name,"0")) break;// 0 ×÷Îª½áÊø±êÖ¾
         result = query(name, hashtable);
-        if(result==NULL) printf("\nå¯¹ä¸èµ·ï¼Œæ²¡æœ‰ä½ è¦æŸ¥è¯¢çš„ç”¨æˆ·ã€‚" );
-        else printf("ä½ æ‰€æŸ¥è¯¢ç”¨æˆ·çš„ç”µè¯å·ç ä¸ºï¼š%s\n",result);
+        if(result==NULL) printf("\n¶Ô²»Æğ£¬Ã»ÓĞÄãÒª²éÑ¯µÄÓÃ»§¡£" );
+        else printf("ÄãËù²éÑ¯ÓÃ»§µÄµç»°ºÅÂëÎª£º%s\n",result);
     }
     return 0;
 }

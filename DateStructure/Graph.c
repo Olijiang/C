@@ -2,38 +2,39 @@
 #include <stdlib.h>
 #define maxsize 8
 
-//æœ¬éƒ¨åˆ†ä¸»è¦åŒ…æ‹¬é‚»æ¥çŸ©é˜µï¼Œé‚»æ¥è¡¨çš„ç”Ÿæˆ å’Œ å›¾çš„æ·±åº¦éå†DFS å›¾çš„å®½åº¦éå†BDF
+//±¾²¿·ÖÖ÷Òª°üÀ¨ÁÚ½Ó¾ØÕó£¬ÁÚ½Ó±íµÄÉú³É ºÍ Í¼µÄÉî¶È±éÀúDFS Í¼µÄ¿í¶È±éÀúBDF
 
-//å›¾ä¸ºä¸å¸¦æƒå€¼çš„ æœ‰å‘å›¾ å’Œ æ— å‘å›¾
+//Í¼Îª²»´øÈ¨ÖµµÄ ÓĞÏòÍ¼ ºÍ ÎŞÏòÍ¼
 
 typedef struct
 {
-	int Vex[maxsize];	//é¡¶ç‚¹è¡¨
-	int Edge[maxsize][maxsize]; //é‚»æ¥çŸ©é˜µï¼Œè¾¹è¡¨
-	int v,e; //å½“å‰é¡¶ç‚¹çš„é¡¶ç‚¹æ•°å’Œè¾¹æ•°
-}MGraph;	//é‚»æ¥çŸ©é˜µ
+	int Vex[maxsize];	//¶¥µã±í
+	int Edge[maxsize][maxsize]; //ÁÚ½Ó¾ØÕó£¬±ß±í
+	int v,e; //µ±Ç°¶¥µãµÄ¶¥µãÊıºÍ±ßÊı
+}MGraph;	//ÁÚ½Ó¾ØÕó
 
 typedef struct ArcNode
-{	//è¾¹èŠ‚ç‚¹
-	int vex; //å½“å‰è¾¹æŒ‡å‘çš„èŠ‚ç‚¹ä¿¡æ¯
-	struct ArcNode *nextarc;	//ä¸‹ä¸€æ¡è¾¹
+{	//±ß½Úµã
+	int vex; //µ±Ç°±ßÖ¸ÏòµÄ½ÚµãĞÅÏ¢
+	struct ArcNode *nextarc;	//ÏÂÒ»Ìõ±ß
 }ArcNode;
 
 typedef struct
-{	//é¡¶ç‚¹èŠ‚ç‚¹
-	int vex;	//é¡¶ç‚¹æ•°æ®
-	ArcNode *firstarc;	// é¡¶ç‚¹å‡ºæ¥çš„ç¬¬ä¸€æ¡è¾¹
+{	//¶¥µã½Úµã
+	int vex;	//¶¥µãÊı¾İ
+	ArcNode *firstarc;	// ¶¥µã³öÀ´µÄµÚÒ»Ìõ±ß
 }VNode;
 typedef struct
 {
-	VNode Adjlist[maxsize];	//é¡¶ç‚¹æ•°ç»„
-	int v,e; //å½“å‰é¡¶ç‚¹çš„é¡¶ç‚¹æ•°å’Œè¾¹æ•°
-}AGraph;	//é‚»æ¥è¡¨
+	VNode Adjlist[maxsize];	//¶¥µãÊı×é
+	int v,e; //µ±Ç°¶¥µãµÄ¶¥µãÊıºÍ±ßÊı
+}AGraph;	//ÁÚ½Ó±í
 
 
-int DetectCircle(AGraph *G, int v);// åŸºäºDFS æ£€æµ‹æœ‰å‘å›¾ä¸­æ˜¯å¦å­˜åœ¨ç¯è·¯;
-void DetectPath(AGraph *G, int v, int j, int d, int L) ;//æ£€æµ‹ iï¼Œ j ç‚¹ä¹‹é—´æ˜¯å¦å­˜åœ¨é•¿åº¦ä¸º L çš„è·¯å¾„ 
-/*  æ— å‘è¡¨
+int DetectCircle(AGraph *G, int v);// »ùÓÚDFS ¼ì²âÓĞÏòÍ¼ÖĞÊÇ·ñ´æÔÚ»·Â·;
+void DetectPath(AGraph *G, int v, int j, int L) ;//¼ì²â i£¬ j µãÖ®¼äÊÇ·ñ´æÔÚ³¤¶ÈÎª L µÄÂ·¾¶ 
+
+/*  ÎŞÏò±í
        1 2 3 4 5 6 7 8
 	1 {0,1,0,1,1,0,0,0},
 	2 {1,0,1,0,0,1,0,0},
@@ -44,7 +45,7 @@ void DetectPath(AGraph *G, int v, int j, int d, int L) ;//æ£€æµ‹ iï¼Œ j ç‚¹ä¹‹é—
 	7 {0,0,0,1,1,0,0,1},
 	8 {0,0,1,0,1,0,1,0}};
 */
-/*  æœ‰å‘è¡¨
+/*  ÓĞÏò±í
        1 2 3 4 5 6 7 8
 	1 {0,1,0,1,1,0,0,0},
 	2 {0,0,0,0,0,1,0,0},
@@ -56,7 +57,7 @@ void DetectPath(AGraph *G, int v, int j, int d, int L) ;//æ£€æµ‹ iï¼Œ j ç‚¹ä¹‹é—
 	8 {0,0,1,0,0,0,0,0}};
 */
 int UnEdge[maxsize][maxsize]={
-	//æ— å‘
+	//ÎŞÏò
 	{0,1,0,1,1,1,0,0},
 	{1,0,1,0,0,0,0,0},
 	{0,1,0,0,0,0,0,1},
@@ -67,7 +68,7 @@ int UnEdge[maxsize][maxsize]={
 	{0,0,1,0,1,0,1,0}};
 
 int DiEdge[maxsize][maxsize]={
-	//æœ‰å‘
+	//ÓĞÏò
 	{0,1,0,1,1,0,0,0},
 	{0,0,0,0,0,1,0,0},
 	{0,1,0,0,0,0,0,0},
@@ -101,7 +102,7 @@ void DisplayMGraph(MGraph G)
 
 AGraph *InitAGraph(MGraph MG)
 {
-	//æ ¹æ®é‚»æ¥çŸ©é˜µåˆ›å»ºä¸€ä¸ªé‚»æ¥è¡¨
+	//¸ù¾İÁÚ½Ó¾ØÕó´´½¨Ò»¸öÁÚ½Ó±í
 	//printf("Begain InitAGraph\n");
 	AGraph *Ayo = (AGraph *)malloc(sizeof(AGraph));
 	ArcNode *tb = (ArcNode *)malloc(sizeof(ArcNode));
@@ -112,7 +113,7 @@ AGraph *InitAGraph(MGraph MG)
 		Ayo->Adjlist[i].firstarc = NULL;
 		for (int j = 0; j < maxsize; ++j)
 			if (MG.Edge[i][j]==1)
-			{	//è¾¹å­˜åœ¨æ—¶è¿æ¥åœ¨åé¢
+			{	//±ß´æÔÚÊ±Á¬½ÓÔÚºóÃæ
 				tn = (ArcNode *)malloc(sizeof(ArcNode));
 				tn->vex = MG.Vex[j];
 				tn->nextarc=NULL;
@@ -152,7 +153,7 @@ void DispalyAGraph(AGraph *G)
 
 void DFS(AGraph *G, int v)
 {
-	//våœ¨è¿™é‡Œè¡¨ç¤ºé¡¶ç‚¹çš„åºå·
+	//vÔÚÕâÀï±íÊ¾¶¥µãµÄĞòºÅ
 	static int Visit[maxsize] = {0};
 	ArcNode *p = G->Adjlist[v-1].firstarc;
 	Visit[v-1] = 1;
@@ -168,18 +169,18 @@ void DFS(AGraph *G, int v)
 
 void DFS1(AGraph *G, int v)
 {
-	//éé€’å½’
+	//·Çµİ¹é
 	static int Visit[maxsize] = {0};
 	ArcNode *p = NULL;
 	int stack[maxsize], top=-1;
 	Visit[v-1] = 1;
 	stack[++top] = v;
 	printf("%d-", G->Adjlist[v-1].vex);// visit()
-	while(top!=-1) //æ ˆç©ºæ—¶ç›´æ¥return ä¸è€ƒè™‘å¾ªç¯æ¡ä»¶
+	while(top!=-1) //Õ»¿ÕÊ±Ö±½Óreturn ²»¿¼ÂÇÑ­»·Ìõ¼ş
 	{
 		p = G->Adjlist[stack[top]-1].firstarc;
-		while(p!=NULL && Visit[p->vex-1])	//è¦ç¡®ä¿pæœ€åä¸æŒ‡å‘ç©ºæŒ‡é’ˆ æ‰èƒ½å¯¹å…¶è®¿é—®ï¼Œä¸ç„¶å‡ºé”™
-			p = p->nextarc; //å¯èƒ½æŒ‡å‘ç©ºæŒ‡é’ˆ
+		while(p!=NULL && Visit[p->vex-1])	//ÒªÈ·±£p×îºó²»Ö¸Ïò¿ÕÖ¸Õë ²ÅÄÜ¶ÔÆä·ÃÎÊ£¬²»È»³ö´í
+			p = p->nextarc; //¿ÉÄÜÖ¸Ïò¿ÕÖ¸Õë
 
 		if (p==NULL)
 			top--;
@@ -201,10 +202,10 @@ void BFS(AGraph *G, int v)
 	ArcNode *p = NULL;
 	while(front<rear)
 	{
-		p = G->Adjlist[queue[front]-1].firstarc;//ä¿ç•™å¯¹å¤´èŠ‚ç‚¹çš„ç¬¬ä¸€æ¡è¾¹
-		printf("%d-", queue[front++]); //è®¿é—®å¯¹å¤´èŠ‚ç‚¹
+		p = G->Adjlist[queue[front]-1].firstarc;//±£Áô¶ÔÍ·½ÚµãµÄµÚÒ»Ìõ±ß
+		printf("%d-", queue[front++]); //·ÃÎÊ¶ÔÍ·½Úµã
 
-		while(p!=NULL) //å°†åˆšå‡ºé˜Ÿçš„èŠ‚ç‚¹åçš„æ‰€ä»¥è¿æ¥èŠ‚ç‚¹å…¥é˜Ÿï¼Œå·²ç»å…¥é˜Ÿåˆ™è·³è¿‡
+		while(p!=NULL) //½«¸Õ³ö¶ÓµÄ½ÚµãºóµÄËùÒÔÁ¬½Ó½ÚµãÈë¶Ó£¬ÒÑ¾­Èë¶ÓÔòÌø¹ı
 		{
 			if (!Visit[p->vex-1])
 			{
@@ -220,11 +221,11 @@ void BFS(AGraph *G, int v)
 
 int HaveEdge(AGraph *G, int v, int j)
 {
-	//æ£€æµ‹ i j ä¹‹é—´æ˜¯å¦å­˜åœ¨è·¯å¾„
+	//¼ì²â i j Ö®¼äÊÇ·ñ´æÔÚÂ·¾¶
 	static int Visit[maxsize] = {0};
 	ArcNode *p = G->Adjlist[v-1].firstarc;
 	Visit[v-1] = 1;
-	if(Visit[j-1] = 1) return 1; //è®¿é—®åˆ°jå·å…ƒç´ è¯´æ˜iï¼Œjé—´å­˜åœ¨è·¯å¾„ï¼Œè¿”å›1
+	if(Visit[j-1] = 1) return 1; //·ÃÎÊµ½jºÅÔªËØËµÃ÷i£¬j¼ä´æÔÚÂ·¾¶£¬·µ»Ø1
 	//printf("%d-", G->Adjlist[v-1].vex);// visit()
 	while(p!=NULL)
 	{
@@ -237,17 +238,20 @@ int HaveEdge(AGraph *G, int v, int j)
 }
 
 
-//é‡‡ç”¨å…¨å±€çš„visit[] å’Œ path[];
-void DetectPath(AGraph *G, int v, int j, int d, int L)
+//²ÉÓÃÈ«¾ÖµÄvisit[] ºÍ path[];
+void DetectPath(AGraph *G, int v, int j, int L)
 {
-	//æ£€æµ‹ iï¼Œ j ç‚¹ä¹‹é—´æ˜¯å¦å­˜åœ¨é•¿åº¦ä¸º L çš„è·¯å¾„ 
-	//é‡‡ç”¨å›æº¯ DFS ç®—æ³•
-	//d åˆå§‹ä¸º 0;
+	//¼ì²â i£¬ j µãÖ®¼äÊÇ·ñ´æÔÚ³¤¶ÈÎª L µÄÂ·¾¶ 
+	//²ÉÓÃ»ØËİ DFS Ëã·¨
+	
+	static int visit[10];
+	static int path[10];
+	static int d = 0;	//d ÎªÒÑ¾­¾­¹ıµÄÂ·¾¶³¤¶È£¬³õÊ¼Îª 0;
 	ArcNode *p = G->Adjlist[v-1].firstarc;
 	visit[v-1] = 1;
 	path[d] = v;
 
-	if (v==j && d==L)
+	if (v==j && d==L)	//d==L Êä³öi jÖ®¼ä³¤¶ÈÎª L µÄÂ·¾¶£¬ d==d ¿ÉÒÔÊä³ö i j Ö®¼äËùÓĞÂ·¾¶£»
 	{
 		for (int i = 0; i <= d; i++)
 			printf("%d ",path[i]);
@@ -256,14 +260,14 @@ void DetectPath(AGraph *G, int v, int j, int d, int L)
 	d++;
 	while(p!=NULL)
 	{
-		//if (!visit[p->vex-1] || p->vex==j)	//æ£€æµ‹ v==j æ—¶çš„è·¯å¾„ï¼Œå³åŒ…å« j çš„ç¯è·¯ï¼Œè‹¥å­˜åœ¨ç¯è·¯ï¼Œåˆ™éå†ä¼šå›åˆ° jï¼Œæ­¤æ—¶visitè‚¯å®šæ ‡è®°ä¸º1ï¼Œéœ€è¦å¼ºåˆ¶è®¿é—®ï¼›
+		//if (!visit[p->vex-1] || p->vex==j)	//¼ì²âÊÇ·ñ°üº¬ j µÄ»·Â·£¬Èô´æÔÚ£¬Ôò±éÀú»á»Øµ½ j£¬´ËÊ±visit¿Ï¶¨±ê¼ÇÎª1£¬ĞèÒªÇ¿ÖÆ·ÃÎÊ£»
 			//DetectPath(G,p->vex,j,d,L);
 		
-		if (!visit[p->vex-1])		//æ£€æµ‹ v j ä¸åŒæ—¶çš„è·¯å¾„
-			DetectPath(G,p->vex,j,d,L);
+		if (!visit[p->vex-1])		//¼ì²â v j ²»Í¬Ê±µÄÂ·¾¶
+			DetectPath(G,p->vex,j,L);
 		p = p->nextarc;
 	}
-	//é€€å‡ºæ—¶å°†visité‡Šæ”¾
+	//ÍË³öÊ±½«visitÊÍ·Å
 	visit[v-1]=0;
 	--d;
 } 
@@ -272,18 +276,22 @@ void DetectPath(AGraph *G, int v, int j, int d, int L)
 
 int DetectCircle(AGraph *G, int v)
 {
-	if (flag) return 1;	//å¯¹éå†è¿›è¡Œæˆªæ”¯ï¼Œæ»¡è¶³æ¡ä»¶ä¹‹é—´è¿”å›ï¼Œä¸å†ç»§ç»­éå†
-	// åŸºäºDFS æ£€æµ‹æœ‰å‘å›¾ä¸­æ˜¯å¦å­˜åœ¨ç¯è·¯;
+	static int visit[10];
+	static int finished[10];
+	static int flag = 0;
+
+	if (flag) return 1;	//¶Ô±éÀú½øĞĞ½ØÖ§£¬Âú×ãÌõ¼şÖ®¼ä·µ»Ø£¬²»ÔÙ¼ÌĞø±éÀú
+	// »ùÓÚDFS ¼ì²âÓĞÏòÍ¼ÖĞÊÇ·ñ´æÔÚ»·Â·;
 	ArcNode *p = G->Adjlist[v-1].firstarc;
 	visit[v-1] = 1;
-	finished[v-1] = 0;
+	finished[v-1] = 1; // finished[i]=1 ±íÊ¾»¹ÔÚ±¾ÂÖ±éÀúÖ®ÖĞ£¬ÔÙ´Î·ÃÎÊµ½×Ô¼ºËµÃ÷´æÔÚ»·Â·
 	while(p!=NULL)
 	{
-		if (visit[p->vex-1]==1 && finished[p->vex-1]==0) flag=1;// finished[i]=0è¡¨ç¤ºè¿˜åœ¨æœ¬è½®éå†ä¹‹ä¸­ï¼Œå†æ¬¡è®¿é—®åˆ°è‡ªå·±è¯´æ˜å­˜åœ¨ç¯è·¯
+		if (visit[p->vex-1]==1 && finished[p->vex-1]==1) flag=1; 	// Í¬Ò»¸ö½Úµã±»ÔÙ´Î·ÃÎÊ£¬ ËµÃ÷´æÔÚ»·Â·£»
 		else if(visit[p->vex-1]==0)
 		{
 			DetectCircle(G,p->vex);
-			finished[p->vex-1]=1;
+			finished[p->vex-1]=0;
 		}
 		p = p->nextarc;
 	}
@@ -291,16 +299,6 @@ int DetectCircle(AGraph *G, int v)
 	return 0;
 }
 
-int visit[8];
-int path[8];
-int finished[8];// åˆå§‹ä¸ºå…¨ 1ï¼Œä¸º0æ—¶è¡¨ç¤ºè¯¥å…ƒç´ å¤„äºæœ¬è½®çš„éå†ä¹‹ä¸­
-int flag = 0;
-void init()
-{
-	for (int i = 0; i < 8; i++) finished[i] =1;
-	for (int i = 0; i < 8; i++) visit[i] =1;
-	flag = 0;
-}
 
 int main()
 {
@@ -319,7 +317,8 @@ int main()
 	AGraph *Ayo = InitAGraph(DiMyo);
 	printf("Undirected AGraph\n");
 	DispalyAGraph(Ayo);
-	DetectPath(Ayo, 1, 8, 0, 4);
+	DetectPath(Ayo, 1, 8, 4);
+	if(DetectCircle(Ayo, 1)) printf("Have circle");
 
 /* 	for (int i = 0; i < 8; i++) visit[i] =0;
 	if(DetectCircle(Ayo, 5)) printf("yes");

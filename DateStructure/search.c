@@ -3,7 +3,7 @@
 
 int Bsearch(int R[], int low, int high, int key)
 {
-	//’€∞Î≤È’“
+	//
 	int mid;
 	while(low<=high)
 	{
