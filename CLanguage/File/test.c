@@ -1,46 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N 20
-int Qsort(int* nums, int L, int H, int flag);
 
-
-int containsDuplicate(int* nums, int numsSize){
-    int flag = 0;
-
-    if(Qsort(nums, 0, numsSize-1, flag)) return 1;;
-    return 0;
-}
-
-int Qsort(int* nums, int L, int H, int flag)
+typedef struct tuble
 {
-    if(L>=H) return 0;
-    if (flag) return flag;
-    
-    int i=L, j=H;
-    int temp = nums[L];
-    while(i<j)
-    {
-        if (nums[j]==temp) flag = 1;
-        while(i<j && nums[j]>=temp) j--;
-        nums[i] = nums[j];
-        while(i<j && nums[i]<temp) i++;
-        nums[j] = nums[i];
-    }
-    nums[i] = temp;
-    Qsort(nums, L, i-1, flag);
-    Qsort(nums, i+1, H, flag);
-    return flag;
-}
+    int vex;
+    int cost;
+}tuble;
+
+void change();
+
 int main()
 {
 
-    int nums[] = {1,5,-2,4,0};
-    int numsSize = 5;
-    int flag = containsDuplicate(nums, numsSize);
-    if (flag) printf ("true");
-    else printf("false");
+    tuble S[2];
+    S[0].vex = 1;
+    S[0].cost = 1;
+    S[1].vex = 5;
+    S[1].cost = 5;
+
+    printf("1:%d %d\n",S[0].vex, S[0].cost);
+    printf("2:%d %d\n",S[1].vex, S[1].cost);
+
+    tuble temp;
+    temp = S[0];
+    S[0] = S[1];
+    S[1] = temp;
     
-    
+    printf("1:%d %d\n",S[0].vex, S[0].cost);
+    printf("2:%d %d\n",S[1].vex, S[1].cost);
     return 0;
 }

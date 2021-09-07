@@ -188,6 +188,23 @@ int GetDeepth(BTNode *tree)
 	}
 }
 
+int GetDeepth2(BTNode *tree)
+{	
+	// 获取树的深度
+	static int max, deep;
+	if (tree==NULL)
+		return 0;
+	else
+	{
+		deep++;
+		GetDeepth2(tree->lch);
+		GetDeepth2(tree->rch);
+		max = (max>deep?max:deep);
+		deep--;
+	}
+	return max;
+}
+
 void Traversal1(BTNode *tree)
 {	//非递归先序遍历
 	BTNode *stack[10];
@@ -342,6 +359,8 @@ int main(int argc, char const *argv[])
 	//PrintPath(bt, 18);
 	printf("wedth:%d\n", GetWidth(yo));
 	printf("wedth2:%d\n", GetWidth2(yo));
+	printf("\n\ndeepth:%d\n", GetDeepth(yo));
+	printf("\n\ndeepth2:%d\n", GetDeepth2(yo));
 /* 	printf("\n\ndeepth:%d\n", GetDeepth(yo));
 	printf("wedth:%d\n", GetWidth(yo));
 	printf("lenth:%d\n", getLenth(yo));

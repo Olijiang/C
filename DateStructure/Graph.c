@@ -30,6 +30,13 @@ typedef struct
 	int v,e; //当前顶点的顶点数和边数
 }AGraph;	//邻接表
 
+typedef struct tuble
+{	// 二元组，包含当前顶点和到这个顶点的代价
+    int vex;
+    int cost;
+}tuble;
+
+
 
 int DetectCircle(AGraph *G, int v);// 基于DFS 检测有向图中是否存在环路;
 void DetectPath(AGraph *G, int v, int j, int L) ;//检测 i， j 点之间是否存在长度为 L 的路径 
@@ -80,6 +87,7 @@ int DiEdge[maxsize][maxsize]={
 
 void InitMGraph(MGraph *G, int Edge[maxsize][maxsize])
 {
+	// 创建邻接矩阵的图
 	for(int i=0;i<maxsize;i++)
 		for (int j = 0; j < maxsize; ++j)
 			G->Edge[i][j] = Edge[i][j];
@@ -102,7 +110,7 @@ void DisplayMGraph(MGraph G)
 
 AGraph *InitAGraph(MGraph MG)
 {
-	//根据邻接矩阵创建一个邻接表
+	//根据邻接矩阵创建一个邻接表图
 	//printf("Begain InitAGraph\n");
 	AGraph *Ayo = (AGraph *)malloc(sizeof(AGraph));
 	ArcNode *tb = (ArcNode *)malloc(sizeof(ArcNode));
@@ -136,6 +144,7 @@ AGraph *InitAGraph(MGraph MG)
 
 void DispalyAGraph(AGraph *G)
 {
+	// 输出邻接表结构的图
 	ArcNode *t = NULL;
 	for (int i = 0; i < maxsize; ++i)
 	{
@@ -238,7 +247,7 @@ int HaveEdge(AGraph *G, int v, int j)
 }
 
 
-//采用全局的visit[] 和 path[];
+
 void DetectPath(AGraph *G, int v, int j, int L)
 {
 	//检测 i， j 点之间是否存在长度为 L 的路径 
