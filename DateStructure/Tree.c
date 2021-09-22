@@ -183,7 +183,7 @@ int GetDeepth(BTNode *tree)
 	{
 		LD = GetDeepth(tree->lch);
 		RD = GetDeepth(tree->rch);
-		//printf("%d\n", LD>RD?LD+1:RD+1);
+		printf("(%d %d)", tree->data,LD-RD);	//平衡因子，先序
 		return LD>RD?LD+1:RD+1;
 	}
 }
@@ -357,10 +357,10 @@ int main(int argc, char const *argv[])
 	//postorder1(yo);
 	//printf("\n");
 	//PrintPath(bt, 18);
-	printf("wedth:%d\n", GetWidth(yo));
-	printf("wedth2:%d\n", GetWidth2(yo));
+	//printf("wedth:%d\n", GetWidth(yo));
+	//printf("wedth2:%d\n", GetWidth2(yo));
 	printf("\n\ndeepth:%d\n", GetDeepth(yo));
-	printf("\n\ndeepth2:%d\n", GetDeepth2(yo));
+	//printf("\n\ndeepth2:%d\n", GetDeepth2(yo));
 /* 	printf("\n\ndeepth:%d\n", GetDeepth(yo));
 	printf("wedth:%d\n", GetWidth(yo));
 	printf("lenth:%d\n", getLenth(yo));
