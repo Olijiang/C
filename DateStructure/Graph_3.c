@@ -31,14 +31,21 @@ typedef struct tuble
 }tuble;
 
 int DiEdge[maxsize][maxsize]={
-	{0,1,0,2,5,0,0,0},
-	{0,0,0,0,0,3,0,0},
-	{0,3,0,0,0,0,0,0},
-	{0,0,0,0,0,0,6,0},
-	{4,0,0,0,0,0,0,2},
+	{0,2,3,1,0,0,0,0},
+	{0,0,0,0,0,4,0,0},
+	{0,0,0,0,4,0,0,0},
+	{0,0,0,0,2,4,0,0},
+	{0,0,0,0,0,0,1,0},
+	{0,0,0,0,0,0,3,3},
 	{0,0,0,0,0,0,0,0},
-	{0,0,0,0,2,0,0,1},
-	{0,0,5,0,0,0,3,0}};
+	{0,0,0,0,0,0,0,0}};
+
+/* 
+	1	5	7
+0		3	6
+	2	4
+ */
+
 
 
 AGraph *InitAGraph()
@@ -110,13 +117,43 @@ void DFS(AGraph *G, int v)
 }
 
 
+int DetectCircle(AGraph *G, int v)
+{
+	static int visit[maxsize];
+	static int finished[maxsize];
+	static int flag = 0;
+
+	if (flag) return 1;	//flag 用于对遍历进行截支，满足条件直接返回，不再继续遍历
+	// 基于DFS 检测有向图中是否存在环路;
+	ArcNode *p = G->Adjlist[v].firstarc;
+	visit[v] = 1;
+	finished[v] = 1; // finished[i]=1 表示还在本轮遍历之中，再次访问到自己说明存在环路
+	printf("%d ",v);
+	while(p!=NULL)
+	{	
+		if (visit[p->vex]==1 && finished[p->vex]==1)
+		{
+			flag=1; 	// 同一个节点被再次访问， 说明存在环路；
+			return 1;	//已检测到回路直接返回；
+		}
+		if(visit[p->vex]==0)
+		{
+			DetectCircle(G,p->vex);
+			finished[p->vex]=0;
+		}
+		p = p->nextarc;
+	}
+	if (flag) return 1;
+	return 0;
+}
+
 
 int main()
 {
 	AGraph *Ayo = InitAGraph();
-	printf("Directed AGraph\n");
-	DispalyAGraph(Ayo);
-	DFS(Ayo, 0);
 
+	DispalyAGraph(Ayo);
+	//DFS(Ayo, 0);
+	if(DetectCircle(Ayo, 0)) printf("\nHave circle");
 	return 0;
 }
