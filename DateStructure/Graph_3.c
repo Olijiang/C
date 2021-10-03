@@ -101,6 +101,32 @@ void DispalyAGraph(AGraph *G)
 	printf("-------------over\n");
 }
 
+void MDFS(int v, int j)
+{
+	static int visit[maxsize];
+	static int d=0;
+	static int path[maxsize];
+	static int top=-1;
+	visit[v]=1;
+	
+	path[++top] = v;
+	if (v==j)
+	{	
+		printf("Lenth:%d  ",d);	
+		for (int i = 0; i <= d; i++)
+			printf("%d ",path[i]);
+		printf("\n");
+	}
+	d++;
+	for (int i = 0; i < maxsize; i++)
+	{
+		if (DiEdge[v][i]!=0 && visit[i]==0)
+			MDFS(i, j);
+	}
+	top--;
+	d--;
+	
+}
 void DFS(AGraph *G, int v)
 {
 	//v表示遍历起始点
@@ -148,12 +174,49 @@ int DetectCircle(AGraph *G, int v)
 }
 
 
+void DetectPath(AGraph *G, int v, int j, int L)
+{
+	//检测 i， j 点之间是否存在长度为 L 的路径 
+	//采用回溯 DFS 算法
+	
+	static int visit[maxsize];
+	static int path[maxsize];
+	static int d = 0;	//d 为已经经过的路径长度，初始为 0;
+	ArcNode *p = G->Adjlist[v].firstarc;
+	visit[v] = 1;
+	path[d] = v;
+
+	if (v==j && d==L)	//d==L 输出i j之间长度为 L 的路径， d==d 可以输出 i j 之间所有路径；
+	{
+		for (int i = 0; i <= d; i++)
+			printf("%d ",path[i]);
+		printf("\n");
+	}
+	d++;
+	while(p!=NULL)
+	{
+		//if (!visit[p->vex-1] || p->vex==j)	//检测是否包含 j 的环路，若存在，则遍历会回到 j，此时visit肯定标记为1，需要强制访问；
+			//DetectPath(G,p->vex,j,d,L);
+		
+		if (!visit[p->vex])		//检测 v j 不同时的路径
+			DetectPath(G,p->vex,j,L);
+		p = p->nextarc;
+	}
+	//退出时将visit释放
+	visit[v]=0;
+	--d;
+} 
+
+
+
 int main()
 {
 	AGraph *Ayo = InitAGraph();
 
 	DispalyAGraph(Ayo);
 	//DFS(Ayo, 0);
+	MDFS(0, 6);
+	printf("\n");
 	if(DetectCircle(Ayo, 0)) printf("\nHave circle");
 	return 0;
 }
