@@ -269,14 +269,11 @@ void DetectPath(AGraph *G, int v, int j, int L)
 	d++;
 	while(p!=NULL)
 	{
-		//检测 v j 相同时的路径, 即检测是否包含 j 的环路，若存在，则遍历会回到 j，此时visit肯定标记为1，需要强制访问；
-		//if (!visit[p->vex-1] || p->vex==j)	
+		//if (!visit[p->vex-1] || p->vex==j)	//检测是否包含 j 的环路，若存在，则遍历会回到 j，此时visit肯定标记为1，需要强制访问；
 			//DetectPath(G,p->vex,j,d,L);
-
-		//检测 v j 不同时的路径
-		if (!visit[p->vex-1])		
+		
+		if (!visit[p->vex-1])		//检测 v j 不同时的路径
 			DetectPath(G,p->vex,j,L);
-
 		p = p->nextarc;
 	}
 	//退出时将visit释放
@@ -299,11 +296,7 @@ int DetectCircle(AGraph *G, int v)
 	finished[v-1] = 1; // finished[i]=1 表示还在本轮遍历之中，再次访问到自己说明存在环路
 	while(p!=NULL)
 	{
-		if (visit[p->vex-1] && finished[p->vex-1]) 
-		{
-			flag=1; 	// 同一个节点被再次访问， 说明存在环路；
-			return 1;
-		}
+		if (visit[p->vex-1]==1 && finished[p->vex-1]==1) flag=1; 	// 同一个节点被再次访问， 说明存在环路；
 		else if(visit[p->vex-1]==0)
 		{
 			DetectCircle(G,p->vex);

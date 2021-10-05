@@ -1,33 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
+int n=0;
 
-typedef struct tuble
+int func(int x)
 {
-    int vex;
-    int cost;
-}tuble;
-
-void change();
+    printf("%d ",++n);
+    if (x<=3) return 1;
+    else return func(x-4)+func(x-2)+1;
+}
 
 int main()
 {
-
-    tuble S[2];
-    S[0].vex = 1;
-    S[0].cost = 1;
-    S[1].vex = 5;
-    S[1].cost = 5;
-
-    printf("1:%d %d\n",S[0].vex, S[0].cost);
-    printf("2:%d %d\n",S[1].vex, S[1].cost);
-
-    tuble temp;
-    temp = S[0];
-    S[0] = S[1];
-    S[1] = temp;
-    
-    printf("1:%d %d\n",S[0].vex, S[0].cost);
-    printf("2:%d %d\n",S[1].vex, S[1].cost);
+    func(func(8));
     return 0;
 }

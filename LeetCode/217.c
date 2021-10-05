@@ -83,7 +83,7 @@ void containsDuplicate_2()
         if(nums[i]==nums[i+1]) flag = 1;
     if (flag) printf ("true");
     else printf("false");
-}
+}   
 
 int main()
 {
