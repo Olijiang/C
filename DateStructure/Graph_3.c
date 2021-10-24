@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #define maxsize 8
 
-//Dji 堆优化
+
 
 typedef struct ArcNode
 {	//边节点
@@ -103,6 +103,8 @@ void DispalyAGraph(AGraph *G)
 
 void MDFS(int v, int j)
 {
+	// 邻接表深度遍历
+	// 寻找两点之间的路径
 	static int visit[maxsize];
 	static int d=0;
 	static int path[maxsize];
@@ -112,7 +114,9 @@ void MDFS(int v, int j)
 	path[++top] = v;
 	if (v==j)
 	{	
-		printf("Lenth:%d  ",d);	
+		printf("%d->%d  ", path[0],j);
+		printf("Lenth:%d  ",d);
+		printf("Path:");
 		for (int i = 0; i <= d; i++)
 			printf("%d ",path[i]);
 		printf("\n");
@@ -154,7 +158,7 @@ int DetectCircle(AGraph *G, int v)
 	ArcNode *p = G->Adjlist[v].firstarc;
 	visit[v] = 1;
 	finished[v] = 1; // finished[i]=1 表示还在本轮遍历之中，再次访问到自己说明存在环路
-	printf("%d ",v);
+	//printf("%d ",v);
 	while(p!=NULL)
 	{	
 		if (visit[p->vex]==1 && finished[p->vex]==1)
@@ -208,6 +212,29 @@ void DetectPath(AGraph *G, int v, int j, int L)
 } 
 
 
+void TopoSort(AGraph *G, int v)
+{	//深度优先拓扑排序
+	static int visit[maxsize];
+	static int TPstack[maxsize]; 	//排序栈
+	static int top = 0;
+	ArcNode *p = G->Adjlist[v].firstarc;
+	visit[v] = 1;
+	while (p!=NULL)
+	{
+		if (!visit[p->vex])
+			TopoSort(G, p->vex);
+		p = p->nextarc;
+	}
+
+	TPstack[top++] = v;	//递归退出节点时节点入栈，栈序列为逆拓扑序列
+	if (top==maxsize)
+	{
+		printf("TopoSort:");
+		for (int i = maxsize-1; i >= 0; i--)
+			printf("%d ", TPstack[i]);
+	}
+	
+}
 
 int main()
 {
@@ -218,5 +245,6 @@ int main()
 	MDFS(0, 6);
 	printf("\n");
 	if(DetectCircle(Ayo, 0)) printf("\nHave circle");
+	TopoSort(Ayo, 0);
 	return 0;
 }
