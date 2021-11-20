@@ -1,17 +1,20 @@
 #include <stdio.h>
+#include <math.h>
 
 int isop(char c)
 {
 	// c 是操作符返回 1， 否则返回 0；
-	return (c=='+'||c=='-'||c=='*'||c=='/')?(1):(0);
+	return (c=='+'||c=='-'||c=='*'||c=='/'||c=='^')?(1):(0);
 }
 
 int comop(char op1, char op2)
 {
 	//如果 op2 操作符比 op1 操作符优先级高或相等，返回 1 ，否则返回 0；
-	//'+', '-', '*', '/' 对应 43 45 42 47 
-	if (op1==43||op1==45) return 1;
-	if (op1==42&&op2==47||op1==47&&op2==42||op1==op2==42||op1==op2==47) return 1;
+	//if (op2=='(' && op1=='(') return 1;
+	if (op2=='(') return 0; //遇到栈中的括号，返回 0 不允许计算
+	if (op1=='^') return 0;
+	if (op1=='+' || op1=='-') return 1;
+	if (op2=='*' || op2=='/' || op2=='^') return 1;
 	return 0;
 }
 
@@ -24,6 +27,7 @@ int scalcu(int a, int b, char c)
 		case '-':return a-b;
 		case '*':return a*b;
 		case '/':return a/b;
+		case '^':return pow(a,b);
 		default:return 0;
 	}
 }
@@ -100,12 +104,50 @@ int calcu(char arr[], int n)
 	return nstack[ntop];
 }
 
+void IntoRear(char *arr, int n)
+{
+	char opstack[n]; //操作符栈
+	char restack[n]; //结果栈
+	int optop=-1, retop=-1;
+	for(int i=0; i<n-1; i++)	//字符串结尾有个空符
+		{
+		if(arr[i]== '(' )   opstack[++optop] = arr[i];
+		else if(arr[i]== ')')
+		{
+			while(opstack[optop]!='(')
+				restack[++retop] = opstack[optop--];
+			optop--;    //跳过当前这个 '('
+		}
+		else if(!isop(arr[i])) restack[++retop] = arr[i];   //数字直接入栈
+		else    // 操作符时 
+		{
+			if(optop == -1) opstack[++optop] = arr[i];  //栈空，直接入栈
+			else 
+			{   // comop(op1, op2), 当 op2 的优先级高于 op1 时返回 1, 否则返回 0；
+				// opstack[optop] 栈顶的符号可能为括号，此时直接入操作符栈
+				if(opstack[optop]=='(' || comop(opstack[optop], arr[i])) opstack[++optop] = arr[i];
+				else
+				{
+					restack[++retop] = opstack[optop--];
+					opstack[++optop] = arr[i];
+				} 
+				
+			}
+		}
+	}
+	while(optop!=-1)  restack[++retop] = opstack[optop--]; //弹出剩余的
+	for(int i = 0; i <= retop; i++)  printf("%c ",restack[i]);
+}
+
+
 int main(int argc, char const *argv[])
 {
-	char a[] ="(2+(3-1)*4+2)/2";
+	char a[] ="(2+(3-1)*4+2)/2^2";
 	int n = sizeof(a)/sizeof(a[0]);
 	int result = calcu(a, n);
 	printf("result = %d\n", result);
 	//printf("%d %d %d %d \n", '+','-','*','/');
+	IntoRear(a,n);
+
 	return 0;
 }

@@ -14,7 +14,7 @@ void Init() {for (int i = 1; i < 9; i++) for (int j = 1; j < 9; j++) queen[i][j]
     
 void display() 
 {   
-    printf("第 %d 组\n",++n);
+    printf("\n第 %d 组\n",++n);
     for (int i = 1; i < 9; i++)
     {
         for (int j = 1; j < 9; j++) 
@@ -43,16 +43,16 @@ void placeQueen(int k)
 
 int Check(int x, int y)
 {   //检查冲突
-    int flag = 0;
+
     int i, k, l;
-    for (i = 0; i < 9; i++) if(queen[i][y]==9) flag=1;
-    for (i = 0; i < 9; i++) if(queen[x][i]==9) flag=1;
-    for (k=x,l=y; k<9 && l<9; k++,l++) if (queen[k][l]==9) flag=1;
-    for (k=x,l=y; k>0 && l<9; k--,l++) if (queen[k][l]==9) flag=1;
-    for (k=x,l=y; k>0 && l>0; k--,l--) if (queen[k][l]==9) flag=1;
-    for (k=x,l=y; k<9 && l>0; k++,l--) if (queen[k][l]==9) flag=1;
-    
-    return flag;
+    for (i = 0; i < 9; i++) if(queen[i][y]==9) return 1;
+    for (i = 0; i < 9; i++) if(queen[x][i]==9) return 1;
+    for (k=x,l=y; k<9 && l<9; k++,l++) if (queen[k][l]==9) return 1;
+    for (k=x,l=y; k>0 && l<9; k--,l++) if (queen[k][l]==9) return 1;
+    for (k=x,l=y; k>0 && l>0; k--,l--) if (queen[k][l]==9) return 1;
+    for (k=x,l=y; k<9 && l>0; k++,l--) if (queen[k][l]==9) return 1;
+
+    return 0;
 }
 
 void Mark(int x, int y)

@@ -3,7 +3,6 @@
 #define maxsize 8
 
 
-
 typedef struct ArcNode
 {	//边节点
 	int vex; //当前边指向的节点信息
@@ -24,11 +23,6 @@ typedef struct
 	int v,e; //当前顶点的顶点数和边数
 }AGraph;	
 
-typedef struct tuble
-{	// 二元组，包含当前顶点和到这个顶点的代价
-    int vex;
-    int cost;
-}tuble;
 
 int DiEdge[maxsize][maxsize]={
 	{0,2,3,1,0,0,0,0},
@@ -70,13 +64,13 @@ AGraph *InitAGraph()
 				{
 					Ayo->Adjlist[i].firstarc = tn;
 					tb = Ayo->Adjlist[i].firstarc;
-					//printf("now inserted %d behind %d \n", Ayo->Adjlist[i].firstarc->vex,G.Vex[i]);
+					//printf("now insert %d behind %d \n", Ayo->Adjlist[i].firstarc->vex,G.Vex[i]);
 				}
 				else
 				{
 					tb->nextarc = tn;
 					tb = tb->nextarc;
-					//printf("now inserted %d behind %d \n", tb->nextarc->vex,G.Vex[i]);
+					//printf("now insert %d behind %d \n", tb->nextarc->vex,G.Vex[i]);
 				}
 			}
 	}
@@ -131,6 +125,23 @@ void MDFS(int v, int j)
 	d--;
 	
 }
+
+int MDFS1(int v, int j)
+{   // 若存在路径，则返回长度。若不存在，则返回-1
+	static int visit[maxsize];
+	static int d=0;   //记录遍历长度
+	static int result=-1;	//记录结果长度
+	if(result!=-1) return result; 	//截断遍历
+	if(v == j) result = d;
+	d++;
+	visit[v] = 1;
+	for(int k=0; k<maxsize; k++)
+		if(DiEdge[v][k] && !visit[k])
+			MDFS1(k, j);
+	d--;
+	return result;
+}
+
 void DFS(AGraph *G, int v)
 {
 	//v表示遍历起始点
@@ -161,10 +172,10 @@ int DetectCircle(AGraph *G, int v)
 	//printf("%d ",v);
 	while(p!=NULL)
 	{	
-		if (visit[p->vex]==1 && finished[p->vex]==1)
+		if (finished[p->vex]==1)
 		{
 			flag=1; 	// 同一个节点被再次访问， 说明存在环路；
-			return 1;	//已检测到回路直接返回；
+			return 1;	// 已检测到回路直接返回；
 		}
 		if(visit[p->vex]==0)
 		{
@@ -187,6 +198,7 @@ void DetectPath(AGraph *G, int v, int j, int L)
 	static int path[maxsize];
 	static int d = 0;	//d 为已经经过的路径长度，初始为 0;
 	ArcNode *p = G->Adjlist[v].firstarc;
+
 	visit[v] = 1;
 	path[d] = v;
 
@@ -199,7 +211,7 @@ void DetectPath(AGraph *G, int v, int j, int L)
 	d++;
 	while(p!=NULL)
 	{
-		//if (!visit[p->vex-1] || p->vex==j)	//检测是否包含 j 的环路，若存在，则遍历会回到 j，此时visit肯定标记为1，需要强制访问；
+		//if (!visit[p->vex] || p->vex==j)	//检测是否包含 j 的环路，若存在，则遍历会回到 j，此时visit肯定标记为1，需要强制访问；
 			//DetectPath(G,p->vex,j,d,L);
 		
 		if (!visit[p->vex])		//检测 v j 不同时的路径
@@ -244,7 +256,8 @@ int main()
 	//DFS(Ayo, 0);
 	MDFS(0, 6);
 	printf("\n");
-	if(DetectCircle(Ayo, 0)) printf("\nHave circle");
+	printf("%d \n", MDFS1(0,6));
+	printf("\nHave Circuit?:%s\n",(DetectCircle(Ayo, 0))?"YES":"NO");
 	TopoSort(Ayo, 0);
 	return 0;
 }

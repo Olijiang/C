@@ -157,7 +157,6 @@ BTNode *Course2(BTNode *tree)
 {
 	//输出每个叶子节点到根节点的路径
 	static int stack[10], top=0;
-	static BTNode *p;
 
 	if (tree==NULL) return NULL;
 

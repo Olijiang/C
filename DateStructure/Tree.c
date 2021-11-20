@@ -184,6 +184,7 @@ int GetDeepth(BTNode *tree)
 		LD = GetDeepth(tree->lch);
 		RD = GetDeepth(tree->rch);
 		//printf("%d\n", LD>RD?LD+1:RD+1);
+		// tree->bf = LD - RD;
 		return LD>RD?LD+1:RD+1;
 	}
 }
