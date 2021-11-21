@@ -121,6 +121,22 @@ Node *Minus(Node *LA, Node *LB)
             lb = lb->next;
         }
     }
+    else    //a 的位数比 b 多的时候，
+    {
+        while (la!=NULL && carry)
+        {
+            if(la->d==0) 
+            {
+                la->d = la->d + 10 - carry;
+            }
+            else 
+            {
+                la->d = la->d - carry;
+                carry=0;
+            }
+            la = la->next;
+        }
+    }
     la = LA->next;
     if (carry==1)  //最后 carry 为 1 的话说明最高位仍产生借位 ，结果为负数
     {
@@ -139,10 +155,10 @@ Node *Minus(Node *LA, Node *LB)
 
     la = LA;
     la = Reverse(la);
-    while (la->next->d == 0)    // 将头节点定位到第一个非 0 元素前面
+    while (la->next->d == 0)    // 将头节点定位到第一个非 0 元素前面,结果为0要特殊考虑
         {
             if(la->next->next!=NULL) la = la->next; 
-            else    // 结果为 0 
+            else   
             {
                 la->next->d = 0;
                 break;
@@ -179,8 +195,6 @@ int main()
         Minus(LA, LB);
         printf("\n\n");
     }
-    
-
 
     return 0;
 }
