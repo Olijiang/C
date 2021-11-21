@@ -572,9 +572,13 @@ int SearchByName(char Name[])
             return 1;
         }
     }
-    printf("\n--------------------------------------- Not found ID %s --------------------------------------------\n",Name);
+    printf("\n--------------------------------------- Not found Name %s --------------------------------------------\n",Name);
     return 0;
 }
+
+
+
+
 
 void ModifyRecord()
 {

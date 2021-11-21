@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct Node
 {
@@ -7,16 +8,22 @@ typedef struct Node
     struct Node *next;
 }Node;
 
+char *input();
+void Show(Node *head);
 
-Node *Creat(int a[], int n)
+
+Node *Creat(char *s)
 {
-    //传入一个整型数组，返回链表头节点
+    
+    int n = strlen(s);
+    //printf("%d",n);
     Node *head = (Node *)malloc(sizeof(Node));
     Node *p, *q = head;
+    head->d = 0;
     for (int i = 0; i < n; i++)
     {
         p = (Node *)malloc(sizeof(Node));
-        p->d = a[i];
+        p->d = s[i]-'0';
         q->next = p;
         q = p;
     }
@@ -24,15 +31,42 @@ Node *Creat(int a[], int n)
     return head;
 }
 
+char *input()
+{
+    // 字符串动态长度输入
+    // 返回字符指针
+    int n = 0, len=10; 
+    char c;
+    char *ch = (char *)malloc(len);
+    char *sh = NULL;
+    while((c = getchar())!='\n')
+    {
+        if (n<len)
+            ch[n++] = c;
+        else
+        {
+            len+=10;
+            sh = (char *)malloc(len);
+            if (sh==NULL) return NULL;
+            strcpy(sh,ch);
+            ch = sh;
+            ch[n++] = c;
+        }
+    }
+    ch[n++] = '\0';
+    return ch;
+}
+
 void Show(Node *head)
 {   //传入链表头节点，打印所有节点值
     Node *p = head->next;
+    if (head->d == -1) printf("-");    
     while (p!=NULL)
     {
         printf("%d",p->d);
         p = p->next;
     }
-    printf("\n");
+    //printf("\n");
 }
 
 
@@ -101,13 +135,19 @@ Node *Minus(Node *LA, Node *LB)
             la = la->next;
         }
         LA->next->d++; //个位数修正
-        printf("-");
     }
 
     la = LA;
-    while (la->next->d == 0)    // 将头节点定位到第一个非 0 元素前面
-        la = la->next;
     la = Reverse(la);
+    while (la->next->d == 0)    // 将头节点定位到第一个非 0 元素前面
+        {
+            if(la->next->next!=NULL) la = la->next; 
+            else    // 结果为 0 
+            {
+                la->next->d = 0;
+                break;
+            }
+        }
     if (carry==1)   // 用头节点标记正负
         la->d = -1;
     else la->d = 1;
@@ -118,16 +158,29 @@ Node *Minus(Node *LA, Node *LB)
 }
 
 
+
+
 int main()
 {
-    int ma[10] = {5,0,1,5,4};
-    int mb[10] = {2,3,5,0,6,1};
-    Node *LA = Creat(ma, 5);
-    Node *LB = Creat(mb, 6);
+    int flag = 1;
+    while (flag)
+    {
+        printf("Input a:");
+        char *sa = input();
+        if (sa[0] == '\0') break;
+        Node *LA = Creat(sa);
 
-    Show(LA);
-    Show(LB);
+        printf("Input b:");
+        char *sb = input();
+        Node *LB = Creat(sb);
 
-    Minus(LA, LB);
+
+        printf("%s - %s = ",sa,sb);
+        Minus(LA, LB);
+        printf("\n\n");
+    }
+    
+
+
     return 0;
 }
