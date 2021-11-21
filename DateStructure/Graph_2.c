@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define maxsize 7
-#define _WQ 100
+#define _Q 100
 // 本部分 使用有向带权图 求解最小生成树
 
 
 int AdjMa[maxsize][maxsize] = {
-	{_WQ,4,6,6,_WQ,_WQ,_WQ},
-	{_WQ,_WQ,1,_WQ,7,_WQ,_WQ},
-	{_WQ,_WQ,_WQ,_WQ,6,4,_WQ},
-	{_WQ,_WQ,2,_WQ,_WQ,5,_WQ},
-	{_WQ,_WQ,_WQ,_WQ,_WQ,_WQ,6},
-	{_WQ,_WQ,_WQ,_WQ,1,_WQ,8},
-	{_WQ,_WQ,_WQ,_WQ,_WQ,_WQ,_WQ}};
+	{_Q,4,6,6,_Q,_Q,_Q},
+	{_Q,_Q,1,_Q,7,_Q,_Q},
+	{_Q,_Q,_Q,_Q,6,4,_Q},
+	{_Q,_Q,2,_Q,_Q,5,_Q},
+	{_Q,_Q,_Q,_Q,_Q,_Q,6},
+	{_Q,_Q,_Q,_Q,1,_Q,8},
+	{_Q,_Q,_Q,_Q,_Q,_Q,_Q}};
 
 
 typedef struct
@@ -43,7 +43,7 @@ void DisplayMGraph(MGraph G)
 	{
 		printf("%d---", G.Vex[i]);
 		for (int j = 0; j < maxsize; ++j)
-			if (G.Edge[i][j]<_WQ)
+			if (G.Edge[i][j]<_Q)
 				printf("-%d", G.Vex[j]);
 		printf("\n");
 	}
@@ -52,13 +52,13 @@ void DisplayMGraph(MGraph G)
 int prim(MGraph G, int v0)
 {	//只能用于无向图
 	int isJoin[maxsize], lowCost[maxsize];//定义数组时长度只能用常量，G.v属于变量，不可行
-	int min=_WQ, n = v0;
+	int min=_Q, n = v0;
 	int sum=0;
 	for (int i = 0; i < G.v; ++i) lowCost[i]=10, isJoin[i] =0;
 	isJoin[n] = 1;
 	for (int j = 0; j < G.v-1; ++j)
 	{
-	    min = _WQ;
+	    min = _Q;
 		for (int i = 0; i < G.v; ++i)	//用与当前节点连接节点的权值与lowCost中的比较，取较小者保留到lowCost中
 			if(G.Edge[n][i]<lowCost[i] && !isJoin[i]) lowCost[i] = G.Edge[n][i];
 		for (int i = 0; i < G.v; ++i)	//找到当前lowCost中权值最小节点，加入树中。并以新节点重复这个过程
@@ -79,7 +79,7 @@ void Dijkstra(MGraph G, int v, int dist[], int path[])
 	dist[v] = 0;
 	path[v] = -1;
 	isJoin[v] = 1;
-	int n = v, min = _WQ;
+	int n = v, min = _Q;
 	for (int i = 0; i < maxsize-1; ++i)
 	{
 		for (int i = 0; i < maxsize; ++i)//遍历更新权值
@@ -88,7 +88,7 @@ void Dijkstra(MGraph G, int v, int dist[], int path[])
 				dist[i] = G.Edge[n][i] + dist[n];
 				path[i] = n;
 			}
-		min = _WQ;
+		min = _Q;
 		for (int i = 0; i < maxsize; ++i) //找到最小权值 然后加入
 			if (dist[i]<min && !isJoin[i]) 
 			{
@@ -118,7 +118,7 @@ int main(int argc, char const *argv[])
 	DisplayMGraph(Myo);
 	//printf("%d\n", prim(Myo, 0));
 	int dist[maxsize], path[maxsize];
-	for (int i = 0; i < maxsize; ++i) dist[i]=_WQ, path[i]=0;
+	for (int i = 0; i < maxsize; ++i) dist[i]=_Q, path[i]=0;
 	Dijkstra(Myo, 0, dist, path);
 	printf("\n---------DIST-----------\n");
 	for (int i = 0; i < maxsize; ++i)

@@ -127,7 +127,8 @@ void MDFS(int v, int j)
 }
 
 int MDFS1(int v, int j)
-{   // 若存在路径，则返回长度。若不存在，则返回-1
+{   // 基于邻接矩阵的遍历
+	// 若存在路径，则返回长度。若不存在，则返回-1
 	static int visit[maxsize];
 	static int d=0;   //记录遍历长度
 	static int result=-1;	//记录结果长度
@@ -160,12 +161,12 @@ void DFS(AGraph *G, int v)
 
 int DetectCircle(AGraph *G, int v)
 {
+	// 基于DFS 检测有向图中是否存在环路;
 	static int visit[maxsize];
 	static int finished[maxsize];
 	static int flag = 0;
 
 	if (flag) return 1;	//flag 用于对遍历进行截支，满足条件直接返回，不再继续遍历
-	// 基于DFS 检测有向图中是否存在环路;
 	ArcNode *p = G->Adjlist[v].firstarc;
 	visit[v] = 1;
 	finished[v] = 1; // finished[i]=1 表示还在本轮遍历之中，再次访问到自己说明存在环路
@@ -212,7 +213,7 @@ void DetectPath(AGraph *G, int v, int j, int L)
 	while(p!=NULL)
 	{
 		//if (!visit[p->vex] || p->vex==j)	//检测是否包含 j 的环路，若存在，则遍历会回到 j，此时visit肯定标记为1，需要强制访问；
-			//DetectPath(G,p->vex,j,d,L);
+			//DetectPath(G,p->vex,j,L);
 		
 		if (!visit[p->vex])		//检测 v j 不同时的路径
 			DetectPath(G,p->vex,j,L);
@@ -255,9 +256,8 @@ int main()
 	DispalyAGraph(Ayo);
 	//DFS(Ayo, 0);
 	MDFS(0, 6);
-	printf("\n");
-	printf("%d \n", MDFS1(0,6));
-	printf("\nHave Circuit?:%s\n",(DetectCircle(Ayo, 0))?"YES":"NO");
+	//printf("lenth：%d \n", MDFS1(0,6));
+	printf("Have Circuit?:%s\n",(DetectCircle(Ayo, 0))?"YES":"NO");
 	TopoSort(Ayo, 0);
 	return 0;
 }
