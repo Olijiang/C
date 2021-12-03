@@ -52,11 +52,11 @@ void HeapSort()
 		//Down(i,n);	//递归
 		Sift(i,n);		//非递归
 	for (int i = n; i > 0; i--)
-	{
+	{	//把第一个和最后一个交换
 		temp = a[i];
 		a[i] = a[1];
 		a[1] = temp;
-		Sift(1,i-1);
+		Sift(1,i-1);	
 	}
 }
 

@@ -125,10 +125,7 @@ Node *Minus(Node *LA, Node *LB)
     {
         while (la!=NULL && carry)
         {
-            if(la->d==0) 
-            {
-                la->d = la->d + 10 - carry;
-            }
+            if(la->d==0)  la->d = la->d + 10 - carry;
             else 
             {
                 la->d = la->d - carry;
@@ -142,7 +139,7 @@ Node *Minus(Node *LA, Node *LB)
     {
         /*  
         比如 123 - 456 = -333，反转后对应位相减结果为 321 - 654 = 766；
-        carry=1，表示最终结果是负数；处理方法是对所有位 9-x；最后第一位再 +1；
+        carry=1，表示最终结果是负数；处理方法是对所有位 9-x；第一位再 +1；
         9-7+1=3； 9-6=3； 9-6=3
         结果为 -333；
         */
@@ -173,9 +170,6 @@ Node *Minus(Node *LA, Node *LB)
     //返回结果链表头节点，头节点为-1表示结果为负数，1表示结果非负；
     return la;
 }
-
-
-
 
 int main()
 {

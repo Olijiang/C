@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #define maxsize 6
 
-//本部分主要包括邻接矩阵，邻接表的生成 和 图的深度遍历DFS 图的宽度遍历BDF
+//本部分主要包括邻接表的生成 和 图的深度遍历DFS 图的宽度遍历BDF
 
-//图为不带权值的 有向图 和 无向图
+//图为不带权值无向图
 
 
 typedef struct ArcNode
@@ -23,12 +23,6 @@ typedef struct
 	VNode Adjlist[maxsize];	//顶点数组
 	int v,e; //当前顶点的顶点数和边数
 }AGraph;	//邻接表
-
-typedef struct tuble
-{	// 二元组，包含当前顶点和到这个顶点的代价
-    int vex;
-    int cost;
-}tuble;
 
 int UnEdge[maxsize][maxsize]={
 	//无向
@@ -159,37 +153,46 @@ void BFS(AGraph *G, int v)
 }
 
 int DetectLoop(AGraph *G, int v)
-    {
-        static int visit[maxsize];
-        static int edge, vertex;
-        ArcNode *p = G->Adjlist[v].firstarc;
-        visit[v] = 1;
-        vertex++;
-        while(p!=NULL)
-        {
-            edge++;
-            if(visit[p->vex]==0)
-                DetectLoop(G, p->vex);
-            p = p->nextarc;
-        }
-		//printf(" %d %d ||", edge, vertex);
-        if(edge/2 >= vertex) 
-		{
-			printf("YES");
-			return 1;
-		}
-		return 0;
-    } 
+{
+	static int visit[maxsize];
+	static int edge, vertex;
+	ArcNode *p = G->Adjlist[v].firstarc;
+	visit[v] = 1;
+	vertex++;	// 记顶点
+	while(p!=NULL)
+	{
+		edge++;	//记边
+		if(visit[p->vex]==0)
+			DetectLoop(G, p->vex);
+		p = p->nextarc;
+	}
+	//printf(" %d %d ||", edge, vertex);
+	if(edge/2 >= vertex) 
+		return 1;
+	return 0;
+}
+
+int DetectLoop2(AGraph *G, int v, int pre)
+{
+	static int visit[maxsize];
+	ArcNode *p = G->Adjlist[v].firstarc;
+	if(visit[v]) return 1;
+	visit[v] = 1;
+	while(p!=NULL)
+	{
+		if(DetectLoop2(G, p->vex, v) && p->vex!=pre) return 1;
+		p = p->nextarc;
+	}
+	return 0;
+}
 
 int main()
 {
 
 	AGraph *Ayo = InitAGraph();
 	Display(Ayo);
-	DetectLoop(Ayo,0);
-	
-
-
+	if(DetectLoop(Ayo,0)) printf("DetectLoop:YES\n");
+	if(DetectLoop2(Ayo,0,-1)) printf("DetectLoop2:YES");
 	return 0;
 }
 

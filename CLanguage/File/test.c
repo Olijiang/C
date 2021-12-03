@@ -2,17 +2,17 @@
 #include <stdlib.h>
 #include <math.h>
 
-int n=0;
-
-int func(int x)
+typedef struct
 {
-    printf("%d ",++n);
-    if (x<=3) return 1;
-    else return func(x-4)+func(x-2)+1;
-}
+	int a;	
+	float b; 
+	char c; 
+}node;	
 
 int main()
 {
-    func(func(8));
+
+    
+    printf("%d", sizeof(node));
     return 0;
 }

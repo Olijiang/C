@@ -80,16 +80,16 @@ void Dijkstra(MGraph G, int v, int dist[], int path[])
 	path[v] = -1;
 	isJoin[v] = 1;
 	int n = v, min = _Q;
-	for (int i = 0; i < maxsize-1; ++i)
+	for (int i = 0; i < maxsize; ++i)
 	{
 		for (int i = 0; i < maxsize; ++i)//遍历更新权值
-			if(G.Edge[n][i]+dist[n]<dist[i] && !isJoin[i])
+			if(dist[n] + G.Edge[n][i]<dist[i] && !isJoin[i]) //节点n到i的距离+起始节点到n的距离<起始节点到i的距离
 			{
-				dist[i] = G.Edge[n][i] + dist[n];
-				path[i] = n;
+				dist[i] = G.Edge[n][i] + dist[n];	// 更新dist， 换更小的
+				path[i] = n;	// 路径由n到i
 			}
 		min = _Q;
-		for (int i = 0; i < maxsize; ++i) //找到最小权值 然后加入
+		for (int i = 0; i < maxsize; ++i) //找到权值最小的一个 然后加入
 			if (dist[i]<min && !isJoin[i]) 
 			{
 				min = dist[i];
@@ -120,15 +120,21 @@ int main(int argc, char const *argv[])
 	int dist[maxsize], path[maxsize];
 	for (int i = 0; i < maxsize; ++i) dist[i]=_Q, path[i]=0;
 	Dijkstra(Myo, 0, dist, path);
-	printf("\n---------DIST-----------\n");
+
+	printf("\n-----------------------------result-----------------------------\n");
+	printf("Node: ");
 	for (int i = 0; i < maxsize; ++i)
-		printf("%d-", dist[i]);
-	printf("\n---------PATH-----------\n");
+		printf("%d \t", i);
+	printf("\nPATH: ");
 	for (int i = 0; i < maxsize; ++i)
-		printf("%d-", path[i]);
+		printf("%d \t", dist[i]);
+	printf("\nDIST: ");
+	for (int i = 0; i < maxsize; ++i)
+		printf("%d \t", path[i]);
+	printf("\n------------------------------END------------------------------\n");
 	int n = 6;
 	printf("\n----PATH--FROM--%d-------\n",n);
 	PrintPath(path, n);
-	printf("+-+-+-+-DISTANT:%d\n", dist[n]);
+	printf("\tDISTANT:%d\n", dist[n]);
 	return 0;
 }

@@ -44,7 +44,7 @@ int DiEdge[maxsize][maxsize]={
 
 AGraph *InitAGraph()
 {
-	//创建一个邻接表图
+	//创建一个邻接表结构的图
 	//printf("Begain InitAGraph\n");
 	AGraph *Ayo = (AGraph *)malloc(sizeof(AGraph));
 	ArcNode *tb = (ArcNode *)malloc(sizeof(ArcNode));
@@ -97,7 +97,7 @@ void DispalyAGraph(AGraph *G)
 
 void MDFS(int v, int j)
 {
-	// 邻接表深度遍历
+	// 邻接矩阵深度遍历
 	// 寻找两点之间的路径
 	static int visit[maxsize];
 	static int d=0;
