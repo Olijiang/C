@@ -149,6 +149,50 @@ int GetWidth(BTNode *tree)
 	return max;
 }
 
+int Show(BTNode *tree)
+{
+	// 获取树的最大宽度，队列辅助
+	if (tree==NULL)	return 0;
+
+	st que[10];			//队列，包含一个节点地址和层高标记
+	int front=0,rear=1;
+	int no=0;			//no用来暂存出队节点层高
+	int w[10]={0};		//用来记录每层的宽度
+	int k = 1;
+	que[1].p = tree;	//根节点入队
+	que[1].n = 1;		//根节点层高为1
+
+	while(front!=rear)
+	{
+		front = (front+1)%10;
+		if (k != que[front].n)
+		{
+			printf("\n");
+			k++;
+		}
+		printf("%d\t", que[front].p->data);
+		no = que[front].n;
+		w[no]++;		//每次出队当前层的节点数量+1
+
+		if (que[front].p->lch!=NULL)
+		{
+			rear = (rear+1)%10;
+			que[rear].p = que[front].p->lch;
+			que[rear].n = (que[front].n)+1;
+		}
+		if (que[front].p->rch!=NULL)
+		{
+			rear = (rear+1)%10;
+			que[rear].p = que[front].p->rch;
+			que[rear].n = que[front].n+1;
+		}
+	}
+	int max = w[0];
+	for (int i = 0; i <= no; ++i)
+		max = (max>w[i])?max:w[i];
+	return max;
+}
+
 
 int GetWidth2(BTNode *tree)
 {
@@ -340,6 +384,17 @@ void PrintPath(BTNode *tree, int k)
 	}
 }
 
+void RevertTree(BTNode *tree)
+{
+	if (tree == NULL) return;
+	
+	BTNode *temp = tree->lch;
+	tree->lch = tree->rch;
+	tree->rch = temp;
+	RevertTree(tree->lch);
+	RevertTree(tree->rch);
+}
+
 
 int main(int argc, char const *argv[])
 {
@@ -353,8 +408,11 @@ int main(int argc, char const *argv[])
 	BTNode *bt = CreatBT(pre, in ,0,11,0,11);
 
 
-	level(bt);
-	printf("\n");
+	Show(bt);
+	printf("\n----------------------\n");
+	RevertTree(bt);
+	Show(bt);
+	printf("\n----------------------\n");
 	//postorder1(yo);
 	//printf("\n");
 	//PrintPath(bt, 18);
