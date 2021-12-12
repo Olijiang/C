@@ -175,15 +175,18 @@ int DetectLoop(AGraph *G, int v)
 int DetectLoop2(AGraph *G, int v, int pre)
 {
 	static int visit[maxsize];
+	static int flag;
+	
+	if(flag) return flag;
 	ArcNode *p = G->Adjlist[v].firstarc;
-	if(visit[v]) return 1;
 	visit[v] = 1;
 	while(p!=NULL)
 	{
-		if(DetectLoop2(G, p->vex, v) && p->vex!=pre) return 1;
+		if(p->vex!=pre && visit[p->vex]) flag = 1;
+		if(!visit[p->vex]) DetectLoop2(G, p->vex, v);
 		p = p->nextarc;
 	}
-	return 0;
+	return flag;
 }
 
 int main()
