@@ -8,20 +8,19 @@ typedef struct mystr
 	int len;	
 }mystr;
 
-void init_mystr(mystr *yo)
+mystr init_mystr(char *a)
 {
+	mystr* yo = malloc(sizeof(mystr));
 	yo->ch = malloc(50*sizeof(char));
 	yo->len = 0;
-}
-
-void add_date(mystr *yo, char a[])
-{
+	
 	int i=0;
 	while(a[i]!='\0')
 	{
 		yo->ch[yo->len+1] = a[i++];
 		yo->len++;
 	}
+	return *yo;
 }
 
 void show_date(mystr yo)
@@ -52,37 +51,39 @@ void getnextval(mystr yo, int *nextval)
 			if (yo.ch[i]!=yo.ch[j]) nextval[i]=j;
 			else nextval[i]=nextval[j];
 		}
-		else j=nextval[j];
+		else j=nextval[j];	//j 指针向前回退
 	}
 }
 
 int KMP(mystr yo, mystr subyo, int *nextval)
 {
-	int i=10,j=1,k=1;
+	int i=1,j=1;
 	while(i<=yo.len&&j<=subyo.len)
 	{
 		if (j==0||yo.ch[i]==subyo.ch[j])
 		{
-			i++;j++;
+			i++;
+			j++;
 		}
-		else if(yo.ch[i]!=subyo.ch[j]) ++i;
 		else j=nextval[j];
-		if (j>subyo.len) return i-subyo.len-10;
+
+		if (j>subyo.len) return i-subyo.len;
 	}
 	return 0;
 }
 
-void del(mystr *yo)
+void del(mystr *yo, int start, int spand)
 {
-	int i=2,j=7;
-	if (i+j>yo->len)
+	//start:开始位置　　spand:删除长度
+	int i=start,j=spand;
+	if (i+j > yo->len)
 	{
 		yo->len = i-1;
 		yo->ch[i] = '\0';	
 	}
 	else
 	{
-		while(i+j<=yo->len)
+		while(i+j <= yo->len)
 			yo->ch[i++] = yo->ch[i+j];
 		yo->len = yo->len-j;
 	}
@@ -91,24 +92,20 @@ void del(mystr *yo)
 
 int main(int argc, char const *argv[])
 {
-	char a[] = "man always remenber love becuase of remance only";
-	char b[] = "remance";
+	//char a[] = "man always remenber love becuase of remance only";
+	//char b[] = "remance";
+	char a[] = "ABDCABABCAC";
+	char b[] = "ABCA";
 	int nextval[8];
-	//char *pre;
-	mystr yoa, yob;
-	init_mystr(&yoa);
-	init_mystr(&yob);
-	add_date(&yoa, a);
-	add_date(&yob, b);
+	mystr yoa = init_mystr(a);
+	mystr yob = init_mystr(b);
 
 	getnextval(yob, nextval);
 	int k = KMP(yoa,yob,nextval);
-	printf("%d\n",k);
-	//for (int i = 1; i < 8; ++i) printf("%d ", nextval[i]);
+	printf("start:%d  end:%d\n",k, yob.len+k);
 	show_date(yoa);
 	printf("\n");
-	del(&yob);
+	//del(&yob, 1,4);
 	show_date(yob);
-	//show_date(yob);
 	return 0;
 }
