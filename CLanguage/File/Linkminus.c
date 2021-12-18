@@ -58,7 +58,7 @@ char *input()
 }
 
 void Show(Node *head)
-{   //传入链表头节点，打印所有节点值
+{   //传入链表头节点，打印所有节点值，头节点值反映负号
     Node *p = head->next;
     if (head->d == -1) printf("-");    
     while (p!=NULL)
@@ -88,7 +88,7 @@ Node *Reverse(Node *head)
 Node *Minus(Node *LA, Node *LB)
 {
     //LA - LB
-    LA = Reverse(LA);   //反转数组 ，从地位到高位依次相减
+    LA = Reverse(LA);   //反转数组 ，从底位到高位依次相减
     LB = Reverse(LB);
     int carry=0;    //carry为借位，不够减的时候需要向下一位借位
     int i;
@@ -111,7 +111,7 @@ Node *Minus(Node *LA, Node *LB)
         lb = lb->next;
         pla = pla->next;
     }
-    if (la==NULL) //a 的位数比 b 少的时候， 
+    if (la==NULL) //case1：a 的位数比 b 少的时候， 把剩下的 b 接到 a 后面
     {
         pla->next = lb;
         while (lb!=NULL)
@@ -121,7 +121,7 @@ Node *Minus(Node *LA, Node *LB)
             lb = lb->next;
         }
     }
-    else    //a 的位数比 b 多的时候，
+    else    //case2：a 的位数比 b 多的时候，
     {
         while (la!=NULL && carry)
         {
@@ -138,10 +138,10 @@ Node *Minus(Node *LA, Node *LB)
     if (carry==1)  //最后 carry 为 1 的话说明最高位仍产生借位 ，结果为负数
     {
         /*  
-        比如 123 - 456 = -333，反转后对应位相减结果为 321 - 654 = 766；
-        carry=1，表示最终结果是负数；处理方法是对所有位 9-x；第一位再 +1；
-        9-7+1=3； 9-6=3； 9-6=3
-        结果为 -333；
+        * 比如 123 - 456 = -333，反转后对应位相减结果为 321 - 654 = 766；
+        * carry=1，表示最终结果是负数；处理方法是对所有位 9-x；第一位再 +1；
+        * 9-7+1=3； 9-6=3； 9-6=3
+        * 结果为 -333；
         */
         while (la!=NULL)
         {
@@ -182,6 +182,7 @@ int main()
 
         printf("Input b:");
         char *sb = input();
+        if (sb[0] == '\0') break;
         Node *LB = Creat(sb);
 
 

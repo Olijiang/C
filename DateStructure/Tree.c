@@ -24,6 +24,9 @@ BTNode *CreatTree()
 	return s;
 }
 
+
+int FindA(BTNode *tree, int a);// 检查tree里有无a值得节点
+
 void AddData(BTNode *tree, int a[],  int n)
 {
 	//接收一个树根节点， 数据数列， 数列长度
@@ -37,21 +40,13 @@ void AddData(BTNode *tree, int a[],  int n)
 		s->data = a[i];
 		s->rch = NULL;
 		s->lch = NULL;
-		while(s->data<p->data?p->lch!=NULL:p->rch!=NULL)
+		while((s->data < p->data) ? p->lch!=NULL : p->rch!=NULL)
 		{
-			if (s->data<p->data) p = p->lch;
+			if (s->data < p->data) p = p->lch;
 			else p = p->rch;
 		}
-		if (s->data<p->data)
-		{
-			p->lch = s;
-			//printf("stock in left %d\n",a[i]);
-		}
-		else 
-		{
-			p->rch = s;
-			//printf("stock in right %d\n",a[i]);
-		}
+		if (s->data < p->data)  p->lch = s;
+		else  p->rch = s;
 		
 		i++;
 		p = tree;
@@ -151,7 +146,7 @@ int GetWidth(BTNode *tree)
 
 int Show(BTNode *tree)
 {
-	// 获取树的最大宽度，队列辅助
+	// 按层次打印树
 	if (tree==NULL)	return 0;
 
 	st que[10];			//队列，包含一个节点地址和层高标记
@@ -253,56 +248,44 @@ int GetDeepth2(BTNode *tree)
 void Traversal1(BTNode *tree)
 {	//非递归先序遍历
 	BTNode *stack[10];
-	BTNode *temp;
+	BTNode *p;
 	int top=-1;
 	stack[++top] = tree;
 	while(top!=-1)
 	{
-		temp = stack[top];
+		p = stack[top];
 		printf("%d ", stack[top--]->data);
-		if (temp->rch!=NULL)
-			stack[++top] = temp->rch;
+		if (p->rch!=NULL)
+			stack[++top] = p->rch;
 
-		if (temp->lch!=NULL)
-			stack[++top] = temp->lch;
+		if (p->lch!=NULL)
+			stack[++top] = p->lch;
 	}
 }
 
 void Traversal2(BTNode *tree)
 {	//非递归中序遍历
 	BTNode *stack[10];
-	BTNode *temp=tree;
+	BTNode *p=tree;
 	int top=-1;
-	while(top!=-1||temp!=NULL)
+	while(top!=-1||p!=NULL)
 	{
-		while(temp!=NULL)
+		while(p!=NULL)
 		{
-			stack[++top] = temp;
-			temp = temp->lch;
+			stack[++top] = p;
+			p = p->lch;
 		}
 
-		temp = stack[top--];
-		printf("%d ", temp->data);
-		temp=temp->rch;
+		p = stack[top--];
+		printf("%d ", p->data);
+		p=p->rch;
 
 	}
 }
 
 void Traversal3(BTNode *tree)
 {	//非递归后序遍历
-	BTNode *stack[10];
-	BTNode *temp;
-	int top=-1;
-	stack[++top] = tree;
-	while(top!=-1)
-	{
-		temp = stack[top];
-		printf("%d ", stack[top--]->data);
-		if (temp->lch!=NULL)
-			stack[++top] = temp->lch;
-		if (temp->rch!=NULL)
-			stack[++top] = temp->rch;
-	}
+	;
 }
 
 BTNode *CreatBT(int pre[], int in[], int p1,int p2,int i1 ,int i2)
@@ -395,6 +378,25 @@ void RevertTree(BTNode *tree)
 	RevertTree(tree->rch);
 }
 
+BTNode *MinRoot(BTNode *tree, int a, int b)
+{	// 找 a b 的最小祖先
+	while (tree!=NULL)
+	{
+		if(FindA(tree->lch,a) && FindA(tree->lch,b)) tree = tree->lch;
+		else if(FindA(tree->rch,a) && FindA(tree->rch,b)) tree = tree->lch;
+		else return tree;
+	}
+	return NULL;
+}
+
+int FindA(BTNode *tree, int a)
+{	// 检查tree里有无值为a的节点
+	if(tree==NULL) return 0;
+	if(tree->data==a) return 1;
+	if(FindA(tree->lch,a) || FindA(tree->rch,a)) return 1;
+	return 0;
+}
+
 
 int main(int argc, char const *argv[])
 {
@@ -416,6 +418,8 @@ int main(int argc, char const *argv[])
 	//postorder1(yo);
 	//printf("\n");
 	//PrintPath(bt, 18);
+
+	printf("MinRoot:%d\n",MinRoot(yo,43,8)->data);
 	printf("wedth:%d\n", GetWidth(yo));
 	printf("wedth2:%d\n", GetWidth2(yo));
 	printf("\n\ndeepth:%d\n", GetDeepth(yo));

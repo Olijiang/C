@@ -25,7 +25,7 @@ typedef struct
 
 
 int DiEdge[maxsize][maxsize]={
-	{0,2,3,1,0,0,0,0},
+	{0,2,3,1,1,0,0,0},
 	{0,0,0,0,0,4,0,0},
 	{0,0,0,0,4,0,0,0},
 	{0,0,0,0,2,4,0,0},
@@ -190,7 +190,7 @@ int DetectCircle(AGraph *G, int v)
 }
 
 
-void DetectPath(AGraph *G, int v, int j, int L)
+int DetectPath(AGraph *G, int v, int j, int L)
 {
 	//检测 i， j 点之间是否存在长度为 L 的路径 
 	//采用回溯 DFS 算法
@@ -198,17 +198,21 @@ void DetectPath(AGraph *G, int v, int j, int L)
 	static int visit[maxsize];
 	static int path[maxsize];
 	static int d = 0;	//d 为已经经过的路径长度，初始为 0;
+	static int flag = 0;
+
+	//if(flag) return flag;
 	ArcNode *p = G->Adjlist[v].firstarc;
 
-	visit[v] = 1;
+	
 	path[d] = v;
-
 	if (v==j && d==L)	//d==L 输出i j之间长度为 L 的路径， d==d 可以输出 i j 之间所有路径；
 	{
 		for (int i = 0; i <= d; i++)
 			printf("%d ",path[i]);
 		printf("\n");
+		flag = 1;
 	}
+	visit[v] = 1;
 	d++;
 	while(p!=NULL)
 	{
@@ -217,11 +221,13 @@ void DetectPath(AGraph *G, int v, int j, int L)
 		
 		if (!visit[p->vex])		//检测 v j 不同时的路径
 			DetectPath(G,p->vex,j,L);
+			
 		p = p->nextarc;
 	}
 	//退出时将visit释放
 	visit[v]=0;
 	--d;
+	return flag;
 } 
 
 
@@ -255,8 +261,9 @@ int main()
 
 	DispalyAGraph(Ayo);
 	//DFS(Ayo, 0);
-	MDFS(0, 6);
+	//MDFS(0, 6);
 	//printf("lenth：%d \n", MDFS1(0,6));
+	printf("Have Path?:%s\n",(DetectPath(Ayo, 0, 4, 2))?"YES":"NO");
 	printf("Have Circuit?:%s\n",(DetectCircle(Ayo, 0))?"YES":"NO");
 	TopoSort(Ayo, 0);
 	return 0;
