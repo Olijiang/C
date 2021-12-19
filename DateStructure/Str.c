@@ -48,8 +48,8 @@ void getnextval(mystr yo, int *nextval)
 		if(j==0||yo.ch[i]==yo.ch[j])
 		{
 			++i;++j;
-			if (yo.ch[i]!=yo.ch[j]) nextval[i]=j;
-			else nextval[i]=nextval[j];
+			if (yo.ch[i]==yo.ch[j]) nextval[i]=nextval[j];
+			else nextval[i]=j;
 		}
 		else j=nextval[j];	//j 指针向前回退
 	}
