@@ -131,7 +131,6 @@ void IntoRear(char *arr, int n)
 					restack[++retop] = opstack[optop--];
 					opstack[++optop] = arr[i];
 				} 
-				
 			}
 		}
 	}

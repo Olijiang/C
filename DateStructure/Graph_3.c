@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define maxsize 8
+#define MAX 100
 
 
 typedef struct ArcNode
@@ -25,14 +26,14 @@ typedef struct
 
 
 int DiEdge[maxsize][maxsize]={
-	{0,2,3,1,1,0,0,0},
-	{0,0,0,0,0,4,0,0},
-	{0,0,0,0,4,0,0,0},
-	{0,0,0,0,2,4,0,0},
-	{0,0,0,0,0,0,1,0},
-	{0,0,0,0,0,0,3,3},
-	{0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0}};
+	{MAX,2,3,1,1,MAX,MAX,MAX},
+	{MAX,MAX,MAX,MAX,MAX,4,MAX,MAX},
+	{MAX,MAX,MAX,MAX,4,MAX,MAX,MAX},
+	{MAX,MAX,MAX,MAX,2,4,MAX,MAX},
+	{MAX,MAX,MAX,MAX,MAX,MAX,1,MAX},
+	{MAX,MAX,MAX,MAX,MAX,MAX,3,3},
+	{MAX,MAX,MAX,MAX,MAX,MAX,MAX,MAX},
+	{MAX,MAX,MAX,MAX,MAX,MAX,MAX,MAX}};
 
 /* 
 	1	5	7
@@ -49,13 +50,16 @@ AGraph *InitAGraph()
 	AGraph *Ayo = (AGraph *)malloc(sizeof(AGraph));
 	ArcNode *tb = (ArcNode *)malloc(sizeof(ArcNode));
 	ArcNode *tn = NULL;
+	Ayo->e = Ayo->v = 0;
 	for (int i = 0; i < maxsize; ++i)
 	{
+		Ayo->v++;
 		Ayo->Adjlist[i].vex = i;
 		Ayo->Adjlist[i].firstarc = NULL;
 		for (int j = 0; j < maxsize; ++j)
-			if (DiEdge[i][j]>=1)
+			if (DiEdge[i][j]<MAX)
 			{	// 若边存在,新建一个节点
+				Ayo->e++;
 				tn = (ArcNode *)malloc(sizeof(ArcNode));
 				tn->vex = j;
 				tn->cost = DiEdge[i][j];
@@ -252,7 +256,26 @@ void TopoSort(AGraph *G, int v)
 		for (int i = maxsize-1; i >= 0; i--)
 			printf("%d ", TPstack[i]);
 	}
-	
+}
+
+void HeapDijkstra(AGraph *G, int v)
+{	//写不来
+	int *dist = malloc(sizeof(int)*maxsize);
+	int *path = malloc(sizeof(int)*maxsize);
+	int isJoin[maxsize]={0};
+	dist[v] = 0;
+	path[v] = -1;
+	isJoin[v] = 1;
+	int n = v, min = MAX;
+	for (int i = 0; i < G->v; ++i)
+	{
+		/* 
+		思路： 建立一个堆对边按权值进行堆排序
+		问题：排序完成后边的位置发送了变化，更新权值如何定位到对应的边，最坏情况遍历堆
+		 */
+		;
+		isJoin[n] = 1;
+	}
 }
 
 int main()

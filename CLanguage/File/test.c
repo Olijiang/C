@@ -1,18 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-
-typedef struct
-{
-	int a;	
-	float b; 
-	char c; 
-}node;	
 
 int main()
 {
 
-    
-    printf("%d", sizeof(node));
+	char x=1;
+    char *p = &x;
+	for (; ;)
+	{
+		printf("%x\n", p);
+		printf("%x\n", *p++);//内存分配以页为单位，越界访问发生在 分页 结束位置
+	}
+	
     return 0;
 }
