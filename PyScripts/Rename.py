@@ -2,6 +2,7 @@ import os
 path = "D:\\Study\\HTMl\\static\\img\\"
 path = "D:\\FAVORITE\\baidu\\"
 path = 'D:\\FAVORITE\\New\\'
+path = 'D:\\FAVORITE\\20211219\\'
 
 imgs = os.listdir(path)
 

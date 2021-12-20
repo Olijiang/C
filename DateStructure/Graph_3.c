@@ -24,9 +24,14 @@ typedef struct
 	int v,e; //当前顶点的顶点数和边数
 }AGraph;	
 
+typedef struct
+{
+	int cost;
+	int vex;
+}HeapNode;
 
 int DiEdge[maxsize][maxsize]={
-	{MAX,2,3,1,1,MAX,MAX,MAX},
+	{MAX,2,3,1,MAX,MAX,MAX,MAX},
 	{MAX,MAX,MAX,MAX,MAX,4,MAX,MAX},
 	{MAX,MAX,MAX,MAX,4,MAX,MAX,MAX},
 	{MAX,MAX,MAX,MAX,2,4,MAX,MAX},
@@ -258,22 +263,129 @@ void TopoSort(AGraph *G, int v)
 	}
 }
 
+void SHeadAdjust(HeapNode* A, int l, int h)
+{	//j将a[l]为根节点的子树调整为小顶堆
+	//单个元素的上浮过程
+	// l 和 h 为数组调整范围的 低位 和 高位
+	int i=l, j=2*l;
+	HeapNode temp = A[i];
+	while (j<=h)
+	{
+		if (j<h && A[j].cost > A[j+1].cost) j++;
+		if (temp.cost > A[j].cost)
+		{
+			A[i] = A[j];
+			i = j;		//继续检查下沉的节点是否还需要下沉
+			j = 2 * i;
+		}
+		else break;
+	}
+	A[i] = temp;
+}
+
 void HeapDijkstra(AGraph *G, int v)
-{	//写不来
-	int *dist = malloc(sizeof(int)*maxsize);
-	int *path = malloc(sizeof(int)*maxsize);
+{	
+	int dist[maxsize] = {0};
+	int path[maxsize] = {0};
 	int isJoin[maxsize]={0};
+	int num = 0; //堆中有效节点个数
+	int pos; //定位节点在堆中的位置
+	ArcNode *p;
+	HeapNode heap[maxsize+1]; 
+	for (int i = 0; i < maxsize+1; i++) //初始化数组
+	{
+		if (i<maxsize)
+		{
+			dist[i] = MAX;
+			path[i] = -1;
+			isJoin[i] = 0;
+		}
+		heap[i].cost=MAX; // 初始cost为MAX	
+		heap[i].vex = -1;	// 节点初始化为-1
+	}
+	dist[v] = 0;
+	path[v] = -1;
+	isJoin[v] = 1;
+	for (int i = 0; i < G->v - 1; ++i)
+	{
+		/* 
+		思路： 建立一个堆对边按权值进行堆排序，堆内节点为{node;cost}，根据cost排序
+		问题：排序完成后边的位置发送了变化，更新权值如何定位到对应的边，遍历堆为最坏情况(结果还是遍历了)
+		时间复杂度：
+		 */
+		p = G->Adjlist[v].firstarc;
+		while (p!=NULL)	// 节点入堆
+		{
+			if(isJoin[p->vex]) //若边已加入，跳过
+			{
+				p=p->nextarc; 
+				continue;
+			}
+			pos = 0;
+			for (int k = 1; k < num+1; k++) //定位节点在heap中的位置
+			{
+				if(heap[k].vex==p->vex)
+				{
+					pos = k;
+					break;
+				}
+			}
+			if(pos && p->cost + dist[v] < heap[pos].cost)//堆中已有p->vex，且v到p->vex + dist[v] 的距离小于现存距离，更新权值
+			{
+				heap[pos].cost =  p->cost+dist[v];
+				path[p->vex] = v;	//记录新路径
+			}
+			if(!pos)	// 堆中无p->vex 点， 有效节点数num+1，在新位置填入新节点
+			{
+				heap[++num].vex = p->vex;
+				heap[num].cost = p->cost + dist[v];
+				path[p->vex] = v;
+			}
+			p=p->nextarc; 
+		}
+		
+		for (int k = num/2; k > 0; k--) SHeadAdjust(heap, k, num); //堆排
+
+		dist[heap[1].vex] = heap[1].cost;
+		v = heap[1].vex; // 以堆顶节点开始下一次
+		isJoin[v] = 1;
+		heap[1] = heap[num]; //删掉堆顶节点
+		num--;	//有效节点数-1
+	}
+}
+
+void Dijkstra(int v)
+{
+	//DiEdge为有向矩阵图
+	int dist[maxsize];
+	int path[maxsize];
+	int isJoin[maxsize];
+	for (int i = 0; i < maxsize; i++)
+	{
+		dist[i] = MAX;
+		path[i] = -1;
+		isJoin[i] = 0;
+	}
+	
 	dist[v] = 0;
 	path[v] = -1;
 	isJoin[v] = 1;
 	int n = v, min = MAX;
-	for (int i = 0; i < G->v; ++i)
+	for (int i = 0; i < maxsize-1; ++i)
 	{
-		/* 
-		思路： 建立一个堆对边按权值进行堆排序
-		问题：排序完成后边的位置发送了变化，更新权值如何定位到对应的边，最坏情况遍历堆
-		 */
-		;
+		for (int i = 0; i < maxsize; ++i)//遍历更新权值
+			if(dist[n] + DiEdge[n][i]<dist[i] && !isJoin[i]) //节点n到i的距离+起始节点到n的距离<起始节点到i的距离
+			{
+				dist[i] = DiEdge[n][i] + dist[n];	// 更新dist， 换更小的
+				path[i] = n;	// 路径由n到i
+			}
+		min = MAX;
+		for (int i = 0; i < maxsize; ++i) //找到权值最小的一个 然后加入
+			if (dist[i]<min && !isJoin[i]) 
+			{
+				min = dist[i];
+				n = i;
+			}
 		isJoin[n] = 1;
 	}
 }
@@ -289,5 +401,7 @@ int main()
 	printf("Have Path?:%s\n",(DetectPath(Ayo, 0, 4, 2))?"YES":"NO");
 	printf("Have Circuit?:%s\n",(DetectCircle(Ayo, 0))?"YES":"NO");
 	TopoSort(Ayo, 0);
+	Dijkstra(0);
+	HeapDijkstra(Ayo, 0);
 	return 0;
 }
