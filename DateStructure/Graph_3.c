@@ -173,7 +173,7 @@ int DetectCircle(AGraph *G, int v)
 	// 基于DFS 检测有向图中是否存在环路;
 	static int visit[maxsize];
 	static int finished[maxsize];
-	static int flag = 0;
+	static int flag = 0;	//标记位
 
 	if (flag) return 1;	//flag 用于对遍历进行截支，满足条件直接返回，不再继续遍历
 	ArcNode *p = G->Adjlist[v].firstarc;
@@ -208,11 +208,8 @@ int DetectPath(AGraph *G, int v, int j, int L)
 	static int path[maxsize];
 	static int d = 0;	//d 为已经经过的路径长度，初始为 0;
 	static int flag = 0;
-
 	//if(flag) return flag;
 	ArcNode *p = G->Adjlist[v].firstarc;
-
-	
 	path[d] = v;
 	if (v==j && d==L)	//d==L 输出i j之间长度为 L 的路径， d==d 可以输出 i j 之间所有路径；
 	{

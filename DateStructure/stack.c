@@ -104,38 +104,39 @@ int calcu(char arr[], int n)
 	return nstack[ntop];
 }
 
-void IntoRear(char *arr, int n)
+void IntoRear(char *In, int n)
 {
+	//In[]：中缀表达式
 	char opstack[n]; //操作符栈
-	char restack[n]; //结果栈
+	char Rear[n]; //后缀表达式
 	int optop=-1, retop=-1;
 	for(int i=0; i<n-1; i++)	//字符串结尾有个空符
 		{
-		if(arr[i]== '(' )   opstack[++optop] = arr[i];
-		else if(arr[i]== ')')
+		if(In[i]== '(' )   opstack[++optop] = In[i];
+		else if(In[i]== ')')
 		{
 			while(opstack[optop]!='(')
-				restack[++retop] = opstack[optop--];
+				Rear[++retop] = opstack[optop--];
 			optop--;    //跳过当前这个 '('
 		}
-		else if(!isop(arr[i])) restack[++retop] = arr[i];   //数字直接入栈
+		else if(!isop(In[i])) Rear[++retop] = In[i];   //数字直接入栈
 		else    // 操作符时 
 		{
-			if(optop == -1) opstack[++optop] = arr[i];  //栈空，直接入栈
+			if(optop == -1) opstack[++optop] = In[i];  //栈空，直接入栈
 			else 
 			{   // comop(op1, op2), 当 op2 的优先级高于 op1 时返回 1, 否则返回 0；
 				// opstack[optop] 栈顶的符号可能为括号，此时直接入操作符栈
-				if(opstack[optop]=='(' || comop(opstack[optop], arr[i])) opstack[++optop] = arr[i];
+				if(opstack[optop]=='(' || comop(opstack[optop], In[i])) opstack[++optop] = In[i];
 				else
 				{
-					restack[++retop] = opstack[optop--];
-					opstack[++optop] = arr[i];
+					Rear[++retop] = opstack[optop--];
+					opstack[++optop] = In[i];
 				} 
 			}
 		}
 	}
-	while(optop!=-1)  restack[++retop] = opstack[optop--]; //弹出剩余的
-	for(int i = 0; i <= retop; i++)  printf("%c ",restack[i]);
+	while(optop!=-1)  Rear[++retop] = opstack[optop--]; //弹出剩余的
+	for(int i = 0; i <= retop; i++)  printf("%c ",Rear[i]);
 }
 
 

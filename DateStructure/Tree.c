@@ -15,22 +15,16 @@ typedef struct
 	int n;
 }st;
 
-BTNode *CreatTree()
-{
-	//创建一颗空树
-	BTNode *s = malloc(sizeof(BTNode));
-	s->rch = NULL;
-	s->lch = NULL;
-	return s;
-}
-
 
 int FindA(BTNode *tree, int a);// 检查tree里有无a值得节点
 
-void AddData(BTNode *tree, int a[],  int n)
+BTNode *CreatTree(int a[],  int n)
 {
-	//接收一个树根节点， 数据数列， 数列长度
+	//数据数列， 数列长度
 	//按二叉排序数插入数据
+	BTNode *tree = malloc(sizeof(BTNode));
+	tree->rch = NULL;
+	tree->lch = NULL;
 	int i=1;
 	BTNode *s,*p = tree;
 	tree->data = a[0];
@@ -40,7 +34,7 @@ void AddData(BTNode *tree, int a[],  int n)
 		s->data = a[i];
 		s->rch = NULL;
 		s->lch = NULL;
-		while((s->data < p->data) ? p->lch!=NULL : p->rch!=NULL)
+		while(p->lch!=NULL && p->rch!=NULL)	//找到正确位置叶子节点
 		{
 			if (s->data < p->data) p = p->lch;
 			else p = p->rch;
@@ -51,6 +45,42 @@ void AddData(BTNode *tree, int a[],  int n)
 		i++;
 		p = tree;
 	}	
+	return tree;
+}
+
+BTNode *CreatTree2(int a[],  int n)
+{
+	//数据数列， 数列长度
+	//完全二叉树
+	BTNode *tree = malloc(sizeof(BTNode));
+	tree->rch = NULL;
+	tree->lch = NULL;
+	BTNode *s,*p = tree;
+	BTNode* stack[n];
+	int top = -1;
+	tree->data = a[0];
+	for (int i = 0; (i+1)*2 <= n; i++)
+	{
+		//数组下标以0开始，左孩子为(i+1)*2-1，右孩子为(i+1)*2
+		//左孩子
+		s = malloc(sizeof(BTNode));
+		s->data = a[(i+1)*2-1];
+		s->rch = NULL;
+		s->lch = NULL;
+		p->lch = s;
+		stack[++top] = s;
+		//右孩子
+		s = malloc(sizeof(BTNode));
+		s->data = a[(i+1)*2];
+		s->rch = NULL;
+		s->lch = NULL;
+		p->rch = s;
+		stack[++top] = s;
+		i++;
+		p = stack[top--];
+		
+	}	
+	return tree;
 }
 
 void postorder1(BTNode *tree)
@@ -378,6 +408,27 @@ void RevertTree(BTNode *tree)
 	RevertTree(tree->rch);
 }
 
+void RevertTree1(BTNode *tree)
+{	//非递归先序遍历反转树
+	BTNode *stack[10];
+	BTNode *p;
+	BTNode *temp;
+	int top=-1;
+	stack[++top] = tree;
+	while(top!=-1)
+	{
+		p = stack[top--];
+		temp = p->lch;
+		p->lch = p->rch;
+		p->rch = temp;
+		if (p->rch!=NULL)
+			stack[++top] = p->rch;
+
+		if (p->lch!=NULL)
+			stack[++top] = p->lch;
+	}
+}
+
 BTNode *MinRoot(BTNode *tree, int a, int b)
 {	// 找 a b 的最小祖先
 	while (tree!=NULL)
@@ -402,8 +453,8 @@ int main(int argc, char const *argv[])
 {
 	int a[] = {55,31,64,8,24,79,93,43,18,84,57,5};
 	int n = 12;
-	BTNode *yo = CreatTree();
-	AddData(yo, a, n);
+	BTNode *yo = CreatTree(a, n);
+	BTNode *yoo = CreatTree(a, n);
 	int pre[] = {55, 31, 8, 5, 24, 18, 43, 64, 57, 79, 93, 84};
 	int in[] = {5, 8, 18, 24, 31, 43, 55, 57, 64, 79, 84, 93};
 
@@ -414,6 +465,12 @@ int main(int argc, char const *argv[])
 	printf("\n----------------------\n");
 	RevertTree(bt);
 	Show(bt);
+	printf("\n----------------------\n");
+
+	Show(yoo);
+	printf("\n----------------------\n");
+	RevertTree1(yoo);
+	Show(yoo);
 	printf("\n----------------------\n");
 	//postorder1(yo);
 	//printf("\n");
