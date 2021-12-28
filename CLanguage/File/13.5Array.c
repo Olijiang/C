@@ -104,7 +104,7 @@ AD: printf("\n> > > > Please enter your chioce(Input 99 get help): ");
     {
         if (Cgfg)
         {
-            printf("record has been changed but not be saved, do you want save and exit?(y or n):");
+            printf("record has been changed but not be saved, do you want to save and exit?(y or n):");
             char c = getchar();
             if (c=='Y' || c=='y')
             {
@@ -122,7 +122,7 @@ AD: printf("\n> > > > Please enter your chioce(Input 99 get help): ");
     } 
     while (d<0 || d>12)
     {
-        printf("Enter Error! Please enter your chioce again:");
+        printf("Invaild Input! Please input your chioce again(0 to exit):");
         scanf("%3d",&d);
         ClearBar();
     }
@@ -395,9 +395,9 @@ void SortByStA(int low, int high)//按Student总成绩 升序 排序
 	temp = Sw[L];
 	while(L<H)
 	{
-		while(L<H && Sw[H].total>=temp.total) --H;  //记得处理等于的情况
-		Sw[L] = Sw[H];	//此处不能写成a[L++] = a[H]，因为若本次循环没有比temp小的数，那么有H==L，经过a[L++] = a[H] 会导致 L 比 H 大1，指向错误的位置
-		while(L<H && Sw[L].total<temp.total) ++L;	//但a[L] = a[H]，会有已经确定的a[L]<temp重复判断一次，但结果是正确的。
+		while(L<H && Sw[H].total>=temp.total) --H;  
+		Sw[L] = Sw[H];	
+		while(L<H && Sw[L].total<temp.total) ++L;	
 		Sw[H] = Sw[L];
 	}
 	Sw[L] = temp;
@@ -413,9 +413,9 @@ void SortByStB(int low, int high)//按Student总成绩 降序 排序
 	temp = Sw[L];
 	while(L<H)
 	{
-		while(L<H && Sw[H].total<=temp.total) --H;  //记得处理等于的情况
-		Sw[L] = Sw[H];	//此处不能写成a[L++] = a[H]，因为若本次循环没有比temp小的数，那么有H==L，经过a[L++] = a[H] 会导致 L 比 H 大1，指向错误的位置
-		while(L<H && Sw[L].total>temp.total) ++L;	//但a[L] = a[H]，会有已经确定的a[L]<temp重复判断一次，但结果是正确的。
+		while(L<H && Sw[H].total<=temp.total) --H;  
+		Sw[L] = Sw[H];	
+		while(L<H && Sw[L].total>temp.total) ++L;	
 		Sw[H] = Sw[L];
 	}
 	Sw[L] = temp;
@@ -431,9 +431,9 @@ void SortByID(int low, int high)
 	temp = Sw[L];
 	while(L<H)
 	{
-		while(L<H && Sw[H].ID>=temp.ID) --H;  //记得处理等于的情况
-		Sw[L] = Sw[H];	//此处不能写成a[L++] = a[H]，因为若本次循环没有比temp小的数，那么有H==L，经过a[L++] = a[H] 会导致 L 比 H 大1，指向错误的位置
-		while(L<H && Sw[L].ID<temp.ID) ++L;	//但a[L] = a[H]，会有已经确定的a[L]<temp重复判断一次，但结果是正确的。
+		while(L<H && Sw[H].ID>=temp.ID) --H;  
+		Sw[L] = Sw[H];	
+		while(L<H && Sw[L].ID<temp.ID) ++L;	
 		Sw[H] = Sw[L];
 	}
 	Sw[L] = temp;
@@ -450,9 +450,9 @@ void SortByName(int low, int high)
 	temp = Sw[L];
 	while(L<H)
 	{
-		while(L<H && strcmp(Sw[H].Name,temp.Name)>=0) --H;  //记得处理等于的情况
-		Sw[L] = Sw[H];	//此处不能写成a[L++] = a[H]，因为若本次循环没有比temp小的数，那么有H==L，经过a[L++] = a[H] 会导致 L 比 H 大1，指向错误的位置
-		while(L<H && strcmp(Sw[H].Name,temp.Name)<0) ++L;	//但a[L] = a[H]，会有已经确定的a[L]<temp重复判断一次，但结果是正确的。
+		while(L<H && strcmp(Sw[H].Name,temp.Name)>=0) --H;  
+		Sw[L] = Sw[H];	
+		while(L<H && strcmp(Sw[H].Name,temp.Name)<0) ++L;	
 		Sw[H] = Sw[L];
 	}
 	Sw[L] = temp;
@@ -603,114 +603,114 @@ CH: printf("> > > >Please chose the options you want to modify(1.Name 2.ID 3.Sex
     int flag=1;//1表示数据合法，0表示数据不合法
     switch (c)
     {
-    case '1':
-    CName:printf("> > > >Please Input New Name(Must be Chinese): ");
-        scanf("%10s",&newname);
-        ClearBar();
-        flag = CheckName(newname);
-        if (!flag)
-        {
-            if(newname[0] == '0')
+        case '1':
+        CName:printf("> > > >Please Input New Name(Must be Chinese): ");
+            scanf("%10s",&newname);
+            ClearBar();
+            flag = CheckName(newname);
+            if (!flag)
             {
-                printf("\n-------------------------------------- modify Failed -----------------------------------------------\n");
-                goto CH;
+                if(newname[0] == '0')
+                {
+                    printf("\n-------------------------------------- modify Failed -----------------------------------------------\n");
+                    goto CH;
+                }
+                printf("\nWarning ---- Vaild Input -------- Name Only Support Chinese --------- or Input 0 to Reselect -------\n");
+                goto CName;
             }
-            printf("\nWarning ---- Vaild Input -------- Name Only Support Chinese --------- or Input 0 to Reselect -------\n");
-            goto CName;
-        }
-        strcpy(Sw[a].Name, newname);
-        Cgfg = 1;
-        printf("\n------------------------------------- Name has been changed ----------------------------------------\n");
-        goto CH;
+            strcpy(Sw[a].Name, newname);
+            Cgfg = 1;
+            printf("\n------------------------------------- Name has been changed ----------------------------------------\n");
+            goto CH;
 
-    case '2':
-    CID: printf("> > > >Please Input New ID(4 lenth): ");
-        scanf("%5d",&newID);
-        ClearBar();
-        flag = CheckID(newID);
-        if (!flag)
-        {
-            if(newID == 0)
+        case '2':
+        CID: printf("> > > >Please Input New ID(4 lenth): ");
+            scanf("%5d",&newID);
+            ClearBar();
+            flag = CheckID(newID);
+            if (!flag)
             {
-                printf("\n-------------------------------------- Modify Failed -----------------------------------------------\n");
-                goto CH;
-            } 
-            printf("\nWarning ---- Vaild Input -------- ID Only Support 4 numbers --------- or Input 0 to exit -----------\n");
-            goto CID;
-        }
-        Sw[a].ID = newID;
-        Cgfg = 1;
-        printf("\n--------------------------------------- ID has been changed ----------------------------------------\n");
-        goto CH;
-
-    case '3':
-    CSex:printf("> > > >Please Input Sex(M or F): ");
-        scanf(" %1c",&newSex);
-        ClearBar();
-        flag = (newSex=='M' || newSex=='F')?(1):(0);
-        if (!flag)
-        {
-            if(newSex == '0')
-            {
-                printf("\n-------------------------------------- Modify Failed -----------------------------------------------\n");
-                goto CH;
+                if(newID == 0)
+                {
+                    printf("\n-------------------------------------- Modify Failed -----------------------------------------------\n");
+                    goto CH;
+                } 
+                printf("\nWarning ---- Vaild Input -------- ID Only Support 4 numbers --------- or Input 0 to exit -----------\n");
+                goto CID;
             }
-            printf("\nWarning ---- Vaild Input -------- Sex Only Support M(Male) or F(female) --- or Input 0 to exit -----\n");
-            goto CSex;
-        }
-        Sw[a].Sex = newSex;
-        Cgfg = 1;
-        printf("\n-------------------------------------- Sex has been changed ----------------------------------------\n");
-        goto CH;
+            Sw[a].ID = newID;
+            Cgfg = 1;
+            printf("\n--------------------------------------- ID has been changed ----------------------------------------\n");
+            goto CH;
 
-    case '4':
-    CBDay:printf("> > > >Please Input New BirthDay(1990~2010 For:19990526): ");
-        scanf("%4d%2d%2d",&year, &month, &day);
-        ClearBar();
-        flag = CheckBirDay(year, month, day);
-        if (!flag)
-        {
-            if(0 == year == month == day ) //全部为0是为表达式值为1
+        case '3':
+        CSex:printf("> > > >Please Input Sex(M or F): ");
+            scanf(" %1c",&newSex);
+            ClearBar();
+            flag = (newSex=='M' || newSex=='F')?(1):(0);
+            if (!flag)
             {
-                printf("\n-------------------------------------- Modify Failed -----------------------------------------------\n");
-                goto CH;
+                if(newSex == '0')
+                {
+                    printf("\n-------------------------------------- Modify Failed -----------------------------------------------\n");
+                    goto CH;
+                }
+                printf("\nWarning ---- Vaild Input -------- Sex Only Support M(Male) or F(female) --- or Input 0 to exit -----\n");
+                goto CSex;
             }
-            printf("\nWarning -- Vaild Input ---- BirthDay Only be Allowed in 1990 to 2010 --- or Input eight 0 to exit --\n");
-            goto CBDay;
-        }
-        Sw[a].Birth.year = year;
-        Sw[a].Birth.month = month;
-        Sw[a].Birth.day = day;
-        Cgfg = 1;
-        printf("\n------------------------------------ BirthDay has been changed -------------------------------------\n");
-        goto CH;
+            Sw[a].Sex = newSex;
+            Cgfg = 1;
+            printf("\n-------------------------------------- Sex has been changed ----------------------------------------\n");
+            goto CH;
 
-    case '5':
-    Score:printf("> > > >Please Input New Score For 4 Course(1~100 For:98 98 98 98): ");
-        scanf("%3d %3d %3d %3d",&c1, &c2, &c3, &c4);
-        ClearBar();
-        flag = CheckScore(c1, c2, c3, c4);
-        if (!flag)
-        {
-            if(0 == c1 == c2 == c3 == c4)//全部为0时为表达式值为1
+        case '4':
+        CBDay:printf("> > > >Please Input New BirthDay(1990~2010 For:19990526): ");
+            scanf("%4d%2d%2d",&year, &month, &day);
+            ClearBar();
+            flag = CheckBirDay(year, month, day);
+            if (!flag)
             {
-                printf("\n-------------------------------------- Modify Failed -----------------------------------------------\n");
-                goto CH;
+                if(0 == year == month == day ) //全部为0是为表达式值为1
+                {
+                    printf("\n-------------------------------------- Modify Failed -----------------------------------------------\n");
+                    goto CH;
+                }
+                printf("\nWarning -- Vaild Input ---- BirthDay Only be Allowed in 1990 to 2010 --- or Input eight 0 to exit --\n");
+                goto CBDay;
             }
-            printf("\nWarning ---- Vaild Input -------- Score Only be Allowed in 1 to 100 ---- or Input eight 0 to exit --\n");
-            goto Score;
-        }
-        Sw[Sn].Core[0]=c1;
-        Sw[Sn].Core[1]=c2;
-        Sw[Sn].Core[2]=c3;
-        Sw[Sn].Core[3]=c4;
-        Sw[a].total = Sw[a].Core[0]+Sw[a].Core[1]+Sw[a].Core[2]+Sw[a].Core[3];
-        Sw[a].aver = (float)Sw[a].total/4;
-        Cgfg = 1;
-        printf("\n------------------------------------- Score has been changed --------------------------------------\n");
-        goto CH;
-    default:
-        break;
+            Sw[a].Birth.year = year;
+            Sw[a].Birth.month = month;
+            Sw[a].Birth.day = day;
+            Cgfg = 1;
+            printf("\n------------------------------------ BirthDay has been changed -------------------------------------\n");
+            goto CH;
+
+        case '5':
+        Score:printf("> > > >Please Input New Score For 4 Course(1~100 For:98 98 98 98): ");
+            scanf("%3d %3d %3d %3d",&c1, &c2, &c3, &c4);
+            ClearBar();
+            flag = CheckScore(c1, c2, c3, c4);
+            if (!flag)
+            {
+                if(0 == c1 == c2 == c3 == c4)//全部为0时为表达式值为1
+                {
+                    printf("\n-------------------------------------- Modify Failed -----------------------------------------------\n");
+                    goto CH;
+                }
+                printf("\nWarning ---- Vaild Input -------- Score Only be Allowed in 1 to 100 ---- or Input eight 0 to exit --\n");
+                goto Score;
+            }
+            Sw[Sn].Core[0]=c1;
+            Sw[Sn].Core[1]=c2;
+            Sw[Sn].Core[2]=c3;
+            Sw[Sn].Core[3]=c4;
+            Sw[a].total = Sw[a].Core[0]+Sw[a].Core[1]+Sw[a].Core[2]+Sw[a].Core[3];
+            Sw[a].aver = (float)Sw[a].total/4;
+            Cgfg = 1;
+            printf("\n------------------------------------- Score has been changed --------------------------------------\n");
+            goto CH;
+        default:
+            break;
     }
 }
 
@@ -750,54 +750,4 @@ DID:printf("> > > >Please Input ID to delete(4 lenth, 0 to exit): ");
                 return;
             }
         }
-}
-
-
-//以下函数没有使用
-void WriteFile(int n)//fprintf写入，只能单个变量的写入
-{   // fscanf（）函数读取时遇到空格或换行符即停止读取，指针停在空格处，Format格式前面加一个空格似乎可以跳过现在的空格区域从下一个非空格读起， 对格式要求较为严格，
-    FILE *fp;
-    if ((fp=fopen("score.txt","w"))==NULL)
-    {
-        printf("\n--------------------------------------- write to file filed ----------------------------------------\n");
-        exit(0);
-    }
-    fprintf(fp,"Numbers:%2d\n",Sn);
-    for (size_t i = 0; i < n; i++)
-    {
-        fprintf(fp,"ID:%-6d Name:%-10s Sex:%-3c BirthDay:%-4d/%02d/%02d",Sw[i].ID, Sw[i].Name, Sw[i].Sex, Sw[i].Birth.year, Sw[i].Birth.month, Sw[i].Birth.day);
-        fprintf(fp, "  Core:%4d%4d%4d%4d", Sw[i].Core[0], Sw[i].Core[1], Sw[i].Core[2], Sw[i].Core[3]);
-        fprintf(fp, "  Average:%6.1f", Sw[i].aver);
-        fprintf(fp, "  Total:%3d\n", Sw[i].total);
-    }
-    printf("\n-------------------------------------------- Write Success -----------------------------------------\n");
-}
-
-void ReadFile()//fscanf读取
-{
-    FILE *fp;
-    char ch[10];
-    if ((fp=fopen("score.txt","r"))==NULL)
-    {
-        printf("\n-----------------------read from file filed, prepare initialized file write--------------------\n");
-        Init(Sw);
-        return;
-    }
-    fscanf(fp, "Numbers:%2d\n",&Sn);
-    if (Sn==-1)
-    {
-        printf("file error!\n");
-        system("pause");
-        exit(0);
-    }
-    
-    for (size_t i = 0; i < Sn; i++)
-    {                                   //带有ID：%6d Name 之类的格式符号要在前面加丢一个空格， 确保能运行；
-        fscanf(fp, "ID:%6d Name:%10s",&Sw[i].ID, &Sw[i].Name);
-        fscanf(fp, " Sex:%3c  BirthDay:%4d/%02d/%02d ",&Sw[i].Sex, &Sw[i].Birth.year, &Sw[i].Birth.month, &Sw[i].Birth.day);
-        fscanf(fp, " Core:%4d%4d%4d%4d", &Sw[i].Core[0], &Sw[i].Core[1], &Sw[i].Core[2], &Sw[i].Core[3]);
-        fscanf(fp, " Average:%f", &Sw[i].aver);
-        fscanf(fp, " Total:%3d\n", &Sw[i].total);//这里需要把回车一起读走，
-    }
-    fclose(fp);
 }

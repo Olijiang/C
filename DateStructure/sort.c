@@ -112,6 +112,24 @@ void QuickSort(int a[], int low, int high)
 	QuickSort(a, L+1, high);
 }
 
+int SNum_k(int *nums, int low, int high, int k)
+{
+	if (low>high) return -1;
+	int L = low, H = high;
+	int temp = nums[L];
+	while(L<H)
+	{
+		while(L<H && nums[H]>temp) --H;
+		nums[L] = nums[H];	
+		while(L<H && nums[L]<temp) ++L;	
+		nums[H] = nums[L];
+	}
+	nums[L] = temp;
+	if(L==k-1) printf("%d\n ",temp);
+	if(L<k-1) SNum_k(nums, L+1, high, k);
+	else SNum_k(nums, low, L-1, k);
+}
+
 void Reverse(int a[])
 {
 	int L=0, H=n, temp;
@@ -138,6 +156,7 @@ void Show(int a[])
 {
 	for (int i = 0; i <= n; ++i)
 		printf("%d ", a[i]);
+	printf("\n");
 }
 
 
@@ -145,13 +164,14 @@ void Show(int a[])
 
 int main()
 {
-	//{53,17,78,9,45,65,87,32,22,97};
 	//InsertSort(a);
 	//HalfSort(a);
 	//ShellSort(a);
 	BubbleSort(a, n);
-	//QuickSort(a,0,n);
-	ReverseT(a);
 	Show(a);
+	//QuickSort(a,0,n);
+	//ReverseT(a);
+	SNum_k(a, 0,n,4);
+	
 	return 0;
 }

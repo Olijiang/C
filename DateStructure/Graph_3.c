@@ -194,8 +194,7 @@ int DetectCircle(AGraph *G, int v)
 		}
 		p = p->nextarc;
 	}
-	if (flag) return 1;
-	return 0;
+	return flag;
 }
 
 
