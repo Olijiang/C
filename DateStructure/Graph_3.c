@@ -260,31 +260,44 @@ void TopoSort(AGraph *G, int v)
 	}
 }
 
-void SHeadAdjust(HeapNode* A, int l, int h)
-{	//j将a[l]为根节点的子树调整为小顶堆
-	//单个元素的上浮过程
-	// l 和 h 为数组调整范围的 低位 和 高位
-	int i=l, j=2*l;
-	HeapNode temp = A[i];
-	while (j<=h)
+void SHeapUpAdjust(HeapNode* Heap, int k)
+{	//小顶堆单个元素的上浮过程,k上浮元素位置
+	int i=k, j=k/2;
+	HeapNode temp = Heap[k];
+	while (j>0)
 	{
-		if (j<h && A[j].cost > A[j+1].cost) j++;
-		if (temp.cost > A[j].cost)
+		if (temp.cost < Heap[j].cost)
 		{
-			A[i] = A[j];
-			i = j;		//继续检查下沉的节点是否还需要下沉
-			j = 2 * i;
+			Heap[i] = Heap[j];
+			i = j;		//继续检查节点是否还需要上浮
+			j = j/2;
 		}
 		else break;
 	}
-	A[i] = temp;
+	Heap[i] = temp;
+}
+
+void SHeapDownAdjust(HeapNode* Heap, int k, int h)
+{   // 小顶堆单个元素的下沉过程，k: 要调整的元素位置;  h: 堆的总长度
+	int i = k, j = 2*k;
+	HeapNode temp = Heap[i];
+	while(j<=h)
+	{
+		if (j<h && Heap[j].cost > Heap[j+1].cost) j++;
+		if (temp.cost > Heap[j].cost)
+		{
+			Heap[i] = Heap[j];
+			i = j;
+			j = 2*j;
+		}
+		else break;
+	}
+	Heap[i] = temp;
 }
 
 void HeapDijkstra(AGraph *G, int v)
 {	
-	int dist[maxsize] = {0};
-	int path[maxsize] = {0};
-	int isJoin[maxsize]={0};
+	int dist[maxsize], path[maxsize], isJoin[maxsize];
 	int num = 0; //堆中有效节点个数
 	int pos; //定位节点在堆中的位置
 	ArcNode *p;
@@ -338,16 +351,14 @@ void HeapDijkstra(AGraph *G, int v)
 				heap[num].cost = p->cost + dist[v];
 				path[p->vex] = v;
 			}
+			SHeapUpAdjust(heap, num);	// 堆底上浮
 			p=p->nextarc; 
 		}
-		
-		for (int k = num/2; k > 0; k--) SHeadAdjust(heap, k, num); //堆排
-
-		dist[heap[1].vex] = heap[1].cost;
-		v = heap[1].vex; // 以堆顶节点开始下一次
+		dist[heap[1].vex] = heap[1].cost;	
+		v = heap[1].vex; 	// 以堆顶节点开始下一次
 		isJoin[v] = 1;
-		heap[1] = heap[num]; //删掉堆顶节点
-		num--;	//有效节点数-1
+		heap[1] = heap[num--]; 	//换掉堆顶节点，有效节点数-1
+		SHeapDownAdjust(heap, 1, num); 	//堆顶下沉
 	}
 }
 
