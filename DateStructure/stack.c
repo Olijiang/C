@@ -34,8 +34,8 @@ int scalcu(int a, int b, char c)
 
 int calcu(char arr[], int n)
 {
-	char ostack[n/2];
-	int nstack[n/2];
+	char ostack[n/2];	//操作符栈
+	int nstack[n/2];	//数字栈
 	int otop = -1, ntop = -1;
 	int i, a, b, c;
 	int mark = 0; //数字进栈 mark 为 1， 操作符进栈 mark 为 0；初始为 0！！
