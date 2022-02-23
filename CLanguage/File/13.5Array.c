@@ -104,7 +104,7 @@ AD: printf("\n> > > > Please enter your chioce(Input 99 get help): ");
     {
         if (Cgfg)
         {
-            printf("record has been changed but not be saved, do you want to save and exit?(y or n):");
+            printf("record has been changed but not be saved, do you want to save and exit?(Y or y):");
             char c = getchar();
             if (c=='Y' || c=='y')
             {
@@ -115,16 +115,18 @@ AD: printf("\n> > > > Please enter your chioce(Input 99 get help): ");
         }
         else exit(0);
     }
-    if(d==99)
-    {
-        Cue();
-        goto AD;
-    } 
     while (d<0 || d>12)
     {
-        printf("Invaild Input! Please input your chioce again(0 to exit):");
-        scanf("%3d",&d);
-        ClearBar();
+        if(d==99)
+        {
+            Cue();
+            goto AD;
+        } 
+        else
+        {
+            printf("! ! * * * Invaild Input * * * ! !\n");
+            goto AD;
+        }
     }
     return d;
 }
@@ -182,7 +184,7 @@ void Operate(int d)     //根据用户选择执行功能
             AddStuent();//添加记录
             break;
         case 11:
-            printf("Are you sure to save?(Y Or N)");
+            printf("Are you sure wirte to file?(Y Or N)");
             char c = getchar();
             ClearBar();
             if (c=='Y' || c=='y') WriteFile1();
@@ -700,10 +702,10 @@ CH: printf("> > > >Please chose the options you want to modify(1.Name 2.ID 3.Sex
                 printf("\nWarning ---- Vaild Input -------- Score Only be Allowed in 1 to 100 ---- or Input eight 0 to exit --\n");
                 goto Score;
             }
-            Sw[Sn].Core[0]=c1;
-            Sw[Sn].Core[1]=c2;
-            Sw[Sn].Core[2]=c3;
-            Sw[Sn].Core[3]=c4;
+            Sw[a].Core[0]=c1;
+            Sw[a].Core[1]=c2;
+            Sw[a].Core[2]=c3;
+            Sw[a].Core[3]=c4;
             Sw[a].total = Sw[a].Core[0]+Sw[a].Core[1]+Sw[a].Core[2]+Sw[a].Core[3];
             Sw[a].aver = (float)Sw[a].total/4;
             Cgfg = 1;

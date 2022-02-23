@@ -38,24 +38,24 @@ AGraph *InitAGraph()
 {
 	//创建一个邻接表图
 	//printf("Begain InitAGraph\n");
-	AGraph *Ayo = (AGraph *)malloc(sizeof(AGraph));
+	AGraph *G = (AGraph *)malloc(sizeof(AGraph));
 	ArcNode *tb = (ArcNode *)malloc(sizeof(ArcNode));
 	ArcNode *tn = NULL;
 	for (int i = 0; i < maxsize; ++i)
 	{
-		Ayo->Adjlist[i].vex = i;
-		Ayo->Adjlist[i].firstarc = NULL;
+		G->Adjlist[i].vex = i;
+		G->Adjlist[i].firstarc = NULL;
 		for (int j = 0; j < maxsize; ++j)
 			if (UnEdge[i][j]>=1)
 			{	// 若边存在,新建一个节点
 				tn = (ArcNode *)malloc(sizeof(ArcNode));
 				tn->vex = j;
 				tn->nextarc=NULL;
-				if (Ayo->Adjlist[i].firstarc==NULL)
+				if (G->Adjlist[i].firstarc==NULL)
 				{
-					Ayo->Adjlist[i].firstarc = tn;
-					tb = Ayo->Adjlist[i].firstarc;
-					//printf("now insert %d behind %d \n", Ayo->Adjlist[i].firstarc->vex,G.Vex[i]);
+					G->Adjlist[i].firstarc = tn;
+					tb = G->Adjlist[i].firstarc;
+					//printf("now insert %d behind %d \n", G->Adjlist[i].firstarc->vex,G.Vex[i]);
 				}
 				else
 				{
@@ -65,7 +65,7 @@ AGraph *InitAGraph()
 				}
 			}
 	}
-	return Ayo;
+	return G;
 }
 
 void Display(AGraph *G)
@@ -192,10 +192,10 @@ int DetectLoop2(AGraph *G, int v, int pre)
 int main()
 {
 
-	AGraph *Ayo = InitAGraph();
-	Display(Ayo);
-	if(DetectLoop(Ayo,0)) printf("DetectLoop:YES\n");
-	if(DetectLoop2(Ayo,0,-1)) printf("DetectLoop2:YES");
+	AGraph *G = InitAGraph();
+	Display(G);
+	if(DetectLoop(G,0)) printf("DetectLoop:YES\n");
+	if(DetectLoop2(G,0,-1)) printf("DetectLoop2:YES");
 	return 0;
 }
 

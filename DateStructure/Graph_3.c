@@ -52,28 +52,28 @@ AGraph *InitAGraph()
 {
 	//创建一个邻接表结构的图
 	//printf("Begain InitAGraph\n");
-	AGraph *Ayo = (AGraph *)malloc(sizeof(AGraph));
+	AGraph *G = (AGraph *)malloc(sizeof(AGraph));
 	ArcNode *tb = (ArcNode *)malloc(sizeof(ArcNode));
 	ArcNode *tn = NULL;
-	Ayo->e = Ayo->v = 0;
+	G->e = G->v = 0;
 	for (int i = 0; i < maxsize; ++i)
 	{
-		Ayo->v++;
-		Ayo->Adjlist[i].vex = i;
-		Ayo->Adjlist[i].firstarc = NULL;
+		G->v++;
+		G->Adjlist[i].vex = i;
+		G->Adjlist[i].firstarc = NULL;
 		for (int j = 0; j < maxsize; ++j)
 			if (DiEdge[i][j]<MAX)
 			{	// 若边存在,新建一个节点
-				Ayo->e++;
+				G->e++;
 				tn = (ArcNode *)malloc(sizeof(ArcNode));
 				tn->vex = j;
 				tn->cost = DiEdge[i][j];
 				tn->nextarc=NULL;
-				if (Ayo->Adjlist[i].firstarc==NULL)
+				if (G->Adjlist[i].firstarc==NULL)
 				{
-					Ayo->Adjlist[i].firstarc = tn;
-					tb = Ayo->Adjlist[i].firstarc;
-					//printf("now insert %d behind %d \n", Ayo->Adjlist[i].firstarc->vex,G.Vex[i]);
+					G->Adjlist[i].firstarc = tn;
+					tb = G->Adjlist[i].firstarc;
+					//printf("now insert %d behind %d \n", G->Adjlist[i].firstarc->vex,G.Vex[i]);
 				}
 				else
 				{
@@ -83,7 +83,7 @@ AGraph *InitAGraph()
 				}
 			}
 	}
-	return Ayo;
+	return G;
 }
 
 void DispalyAGraph(AGraph *G)
@@ -399,16 +399,16 @@ void Dijkstra(int v)
 
 int main()
 {
-	AGraph *Ayo = InitAGraph();
+	AGraph *G = InitAGraph();
 
-	DispalyAGraph(Ayo);
-	//DFS(Ayo, 0);
+	DispalyAGraph(G);
+	//DFS(G, 0);
 	//MDFS(0, 6);
 	//printf("lenth：%d \n", MDFS1(0,6));
-	printf("Have Path?:%s\n",(DetectPath(Ayo, 0, 4, 2))?"YES":"NO");
-	printf("Have Circuit?:%s\n",(DetectCircle(Ayo, 0))?"YES":"NO");
-	TopoSort(Ayo, 0);
+	printf("Have Path?:%s\n",(DetectPath(G, 0, 4, 2))?"YES":"NO");
+	printf("Have Circuit?:%s\n",(DetectCircle(G, 0))?"YES":"NO");
+	TopoSort(G, 0);
 	Dijkstra(0);
-	HeapDijkstra(Ayo, 0);
+	HeapDijkstra(G, 0);
 	return 0;
 }

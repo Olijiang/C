@@ -125,9 +125,9 @@ int SNum_k(int *nums, int low, int high, int k)
 		nums[H] = nums[L];
 	}
 	nums[L] = temp;
-	if(L==k-1) printf("%d\n ",temp);
-	if(L<k-1) SNum_k(nums, L+1, high, k);
-	else SNum_k(nums, low, L-1, k);
+	if(L==k-1) printf("%d\n ",temp);	// 数组下标从0开始，第k大的数在k-1的位置
+	if(L<k-1) SNum_k(nums, L+1, high, k);	//若当前轴枢位置小于k-1，说明第k大的数在轴枢右边
+	else SNum_k(nums, low, L-1, k);		//若当前轴枢位置大于k-1，说明第k大的数在轴枢左边
 }
 
 void Reverse(int a[])

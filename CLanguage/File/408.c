@@ -2,8 +2,6 @@
 #include <stdlib.h>
 
 
-
-
 // 2010---------------------------------2010
 void reverse(int *nums, int i, int j)
 {   //i,j 为反转的起始位置
