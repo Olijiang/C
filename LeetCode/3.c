@@ -68,6 +68,32 @@ int LengthOfLongestSubstring(char * s){
     return max>n?max:n;
 }
 
+char * longestPalindrome(char * s){
+    // 返回字符串
+    int hash[128]={0};
+    int index[2] = {0,0};
+    for (int i = 0; s[i]; i++)
+    {
+        if(hash[s[i]]){
+            int j = index[0];
+            while (s[j]!=s[i]) hash[s[j++]]=0;
+            hash[s[j]]=0;
+            if (index[1]-index[0]<i-j)
+            {
+                index[0] = j;
+                index[1] = i;
+            }
+        }
+        else hash[s[i]] = 1;
+    }
+    int n = index[1]-index[0]+2;
+    char *res = malloc(sizeof(int)*n);
+    for (int i = 0; i < n-1; i++)
+        res[i] = s[index[0]+i];
+    res[n-1] = '\0';
+    return res;
+}
+
 int main(int argc, char const *argv[])
 {
     char* s = "acva";

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// 八皇后
+// 
 
 void Withdraw(int x, int y);
 void Mark(int x, int y);
@@ -14,7 +14,7 @@ void Init() {for (int i = 1; i < 9; i++) for (int j = 1; j < 9; j++) queen[i][j]
     
 void display() 
 {   
-    printf("\n第 %d 组\n",++n);
+    printf("\n %d \n",++n);
     for (int i = 1; i < 9; i++)
     {
         for (int j = 1; j < 9; j++) 
@@ -33,7 +33,7 @@ void placeQueen(int k)
         if (!flag)
         {
             Mark(k,i);
-            queen[k][i]=9;
+            queen[k][i]=9;  // 鍗犱綅
             placeQueen(k+1);
             if (k==8) display();
             Withdraw(k,i);
@@ -42,7 +42,7 @@ void placeQueen(int k)
 }
 
 int Check(int x, int y)
-{   //检查冲突
+{   //
 
     int i, k, l;
     for (i = 0; i < 9; i++) if(queen[i][y]==9) return 1;
