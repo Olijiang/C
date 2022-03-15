@@ -7,27 +7,24 @@ typedef struct Node
 	struct Node *next;
 }Node, *LinkList;
 
-LinkList Initialist()
+LinkList Initialist(int *data, int n)
 {
-    //创建并返回一个头节点
+    //根据data创建链表, 返回头节点，头节点不存数据
+	Node *head = (Node *)malloc(sizeof(Node));
+	Node *temp;
     Node *p = (Node *)malloc(sizeof(Node));
+	p->data = data[0];
 	p->next = NULL;
-    return p;
-}
-
-void Add_data(Node **tail, int *data, int n)
-{
-    //在 tail节点 后 添加数据，data 为数据数组，n 为数据个数
-    //此处因为要对tail尾节点做同步修改，使用tail的 地址 操作
-	Node *p = NULL;
-	for (int i = 0; i < n; ++i)
+	head->next = p;
+	for (int i = 1; i < n; i++)
 	{
-		p = (Node *)malloc(sizeof(Node));
-		p->data = data[i];
-		p->next = (*tail)->next;
-		(*tail)->next = p;
-		(*tail) = p;
+		temp = (Node *)malloc(sizeof(Node));
+		temp->data = data[i];
+		temp->next = NULL;
+		p->next = temp;
+		p = temp;
 	}
+    return head;
 }
 
 int Delete_MinNode(LinkList head)
@@ -51,6 +48,75 @@ int Delete_MinNode(LinkList head)
     free(p);
 }
 
+LinkList intersetion(LinkList LA, LinkList LB){
+	// 返回两个有序链表的交集, 不破坏原链表
+	Node *LC = NULL, *p, *temp;
+	LA = LA->next;
+	LB = LB->next;
+	while (LA && LB)
+	{
+		if (LA->data == LB->data){
+			if (!LC){
+				LC = malloc(sizeof(Node));
+				p = malloc(sizeof(Node));
+				LC->next = p;
+				p->data = LA->data;
+			}
+			else{
+				temp = malloc(sizeof(Node));
+				temp->data = LA->data;
+				p->next = temp;
+				p = temp;
+			}
+			LA = LA->next;
+			LB = LB->next;
+		}
+		else if (LA->data > LB->data) LB = LB->next;
+		else LA = LA->next;	
+	}
+	p->next = NULL;
+	return LC;
+}
+
+LinkList intersetion2(LinkList LA, LinkList LB){
+	// 返回两个有序链表的交集, 不保留原链表
+	Node *head=NULL, *p, *temp;
+	LA = LA->next;
+	LB = LB->next;
+	while (LA && LB)
+	{
+		if (LA->data == LB->data){
+			if (!head){
+				head = LA;
+				p = head;
+				LA = LA->next;
+			}
+			else{
+				p->next = LA;
+				p = LA;
+				LA = LA->next;
+			}
+			temp = LB;
+			LB = LB->next;
+			free(temp);
+		}
+		else if (LA->data > LB->data){
+			temp = LB;
+			LB = LB->next;
+			free(temp);
+		}
+		else{
+			temp = LA;
+			LA = LA->next;
+			free(temp);
+		}
+	}
+	p->next = NULL; //截断多余部分
+	// 加个无数据头节点
+	Node *prehead = malloc(sizeof(Node));
+	prehead->next = head;
+	return prehead;
+}
 
 void Showlist(Node *head)
 {
@@ -60,23 +126,24 @@ void Showlist(Node *head)
 		printf("%d ",p->data);
 		p = p->next;
 	}
+	printf("\n");
 }
 
 
 int main()
 {
-	int a[] = {6,3,15,2,9,5,13,1};
-
-	Node *head = NULL;
-	Node *tail = NULL;
-
-	head = Initialist();
-	tail = head;
-
-	Add_data(&tail, a, sizeof(a)/sizeof(a[0]));
-	Showlist(head);
-    printf("\n");
-    Delete_MinNode(head);
-    Showlist(head);
+	int arr[] = {1,3,4,5,7,8,10,15};
+	int brr[] = {2,3,4,6,7,9,10};
+	Node *headA = NULL;
+	Node *headB = NULL;
+	Node *headC = NULL;
+	headA = Initialist(arr, sizeof(arr)/sizeof(arr[0]));
+	headB = Initialist(brr, sizeof(brr)/sizeof(brr[0]));
+	Showlist(headA);
+	Showlist(headB);
+	headC = intersetion(headA, headB);
+	Showlist(headC);
+	headC = intersetion2(headA, headB);
+	Showlist(headC);
 	return 0;
 }

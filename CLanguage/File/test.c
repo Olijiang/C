@@ -3,15 +3,13 @@
 
 int main()
 {
-
-	char x=1;
-    char *p = &x;
-	for (; ;)
-	{
-		printf("%x\n", p);
-		printf("%x\n", *p++);//内存分配以页为单位，越界访问发生在 分页 结束位置
-	}
-	
-    return 0;
+	char s[] = "i am a student";
+	int i;
+	for (i = 0; s[i]; i++)
+		if (s[i]==' ') s[i-1] -= 32; 
+	s[i-1] -= 32; 
+	printf("%s", s);
+	printf("%c", s[i+1]);
+	return 0;
 }
 

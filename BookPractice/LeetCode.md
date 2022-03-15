@@ -335,3 +335,132 @@ bool isPalindrome(int x){
    return res==copy?1:0;
 }
 ```
+---
+# 10. 正则表达式匹配
+- 给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' 的正则表达式匹配。
+- '.' 匹配任意单个字符
+- '*' 匹配零个或多个前面的那一个元素
+- 所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
+
+- 动态规划思路
+```
+public class LD10{
+    // leetcode 10 
+
+    public boolean isMatch(String s, String p) {
+        int m = s.length();
+        int n = p.length();
+
+        boolean[][] f = new boolean[m + 1][n + 1];
+        f[0][0] = true;
+        for (int i = 0; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                if (p.charAt(j - 1) == '*') {
+                    // 遇到*号时，当f[i][j]与f[i][j-1]不匹配时，f[i][j] 能否匹配直接取决于 f[i][j - 2]的情况;
+                    // 当f[i][j]与f[i][j-1]匹配时，f[i][j]是否匹配还取决于f[i-1][j]能否匹配。
+                    // 当p[j]=='*'时,若s[i]==p[j-1];那么s[i]属于通配符的范围,可有可无的一个字符,f[i-1][j]匹配f[i][j]就可以匹配;
+                    f[i][j] = f[i][j - 2];
+                    if (matches(s, p, i, j - 1)) {
+                        f[i][j] = f[i][j-2] || f[i-1][j];
+                    }
+                } else {
+                    if (matches(s, p, i, j)) {
+                        f[i][j] = f[i - 1][j - 1];
+                    }
+                }
+            }
+        }
+        return f[m][n];
+    }
+
+    public boolean matches(String s, String p, int i, int j) {
+        if (i == 0) return false;
+        if (p.charAt(j - 1) == '.') return true;
+        return s.charAt(i - 1) == p.charAt(j - 1);
+    }
+```
+---
+# 11. 盛最多水的容器
+- 给定一个长度为 n 的整数数组 height 。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i]) 。
+找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。返回容器可以储存的最大水量。说明：你不能倾斜容器。
+
+- 双指针法，每次改变较小值的位置，记录过程的max值
+```
+int maxArea(int* height, int heightSize){
+    
+    int max=0;
+    for (int i = 0, j=heightSize-1; i < j;)
+    {
+        int t = height[i]>height[j]?height[j]:height[i];
+        max = max>(t*(j-i))?max:t*(j-i);
+        if (height[i]>height[j]) j--;
+        else i++;
+    }
+    return max;
+}
+```
+---
+# 12. 整数转罗马数字
+- 由于题要求范围在1-3999; 可以自己编一个对应表以对应罗马数字的0-9;
+```
+char * intToRoman(int num){
+    
+    char map[4][10][5] = {
+        {"", "I", "II", "III", "IV", "V", "VI" ,"VII", "VIII", "IX"}, // 0-9 个位
+        {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"},
+        {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"},
+        {"", "M", "MM", "MMM", "", "", "", "", "", ""},
+    };
+    char *roman = malloc(sizeof(char)*20);
+    roman[0] = '\0';
+    int k=1000;
+    for (int i = 3; i >= 0; i--)
+    {
+        int t = num/k;
+        strcat(roman, map[i][t]);
+        num %= k;
+        k /= 10;
+    }
+    return roman;
+}
+```
+---
+# 13. 罗马数字转整数
+- 可以挨个字符处理，需要考虑需要考虑两个字符作为一个数字的三种情况;
+```
+int romanToInt(char * s){
+    int num=0;
+    for (int i = 0; s[i]; i++){
+        switch (s[i]){
+            case 'I':
+                if (s[i+1]=='V' || s[i+1]=='X') num -= 1;
+                else num += 1;
+                break;
+            case 'V':
+                num += 5;
+                break;
+            case 'X':
+                if (s[i+1]=='L' || s[i+1]=='C') num -= 10;
+                else num += 10;
+                break;
+            case 'L':
+                num += 50;
+                break;
+            case 'C':
+                if (s[i+1]=='D' || s[i+1]=='M') num -= 100;
+                else num += 100;
+                break;
+            case 'D':
+                num += 500;
+                break;
+            case 'M':
+                num += 1000;
+                break;
+            default:
+                break;
+        }
+    }
+    return num;
+}
+```
+
