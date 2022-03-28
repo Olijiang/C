@@ -12,3 +12,6 @@
     ],
     "version": 4
 }
+
+// D:\SOFTWARE\MinGW\bin\gcc.exe gcc -fsanitize=address -g D:\Study\C\LeetCode\46.c -o D:\Study\C\exe\46
+// gcc -fsanitize=address -fno-omit-frame-pointer -O1 -g D:\Study\C\LeetCode\46.c -o D:\Study\C\LeetCode\46.txt -L D:\SOFTWARE\MinGW\lib

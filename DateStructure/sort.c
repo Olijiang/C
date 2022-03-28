@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int a[10] = {53,17,78,9,45,65,87,32,22,97};
+int a[10] = {53,17,78,9,45,65,87,32,97,22};
 int n = sizeof(a)/sizeof(a[0])-1; //数组最后一个下标,即数组长度-1
 
 void InsertSort();	//插入排序
@@ -29,7 +29,7 @@ void HalfSort(int a[])
 	//主要是在寻找新元素插入位置时的方法不同
 	int i, j, temp;
 	int high, low, mid;
-	for (i = 1; i < n; ++i)
+	for (i = 1; i <= n; ++i)
 		if (a[i]<a[i-1])
 		{
 			temp = a[i];
@@ -102,9 +102,9 @@ void QuickSort(int a[], int low, int high)
 	int temp = a[L];
 	while(L<H)
 	{
-		while(L<H && a[H]>temp) --H;
+		while(L<H && a[H]>=temp) --H;
 		a[L] = a[H];	//此处不能写成a[L++] = a[H]，因为若本次循环没有比temp小的数，那么有H==L，经过a[L++] = a[H] 会导致 L 比 H 大1，指向错误的位置
-		while(L<H && a[L]<temp) ++L;	//但a[L] = a[H]，会有已经确定的a[L]<temp重复判断一次，但结果是正确的。
+		while(L<H && a[L]<=temp) ++L;	//但a[L] = a[H]，会有已经确定的a[L]<temp重复判断一次，但结果是正确的。
 		a[H] = a[L];
 	}
 	a[L] = temp;
@@ -165,9 +165,9 @@ void Show(int a[])
 int main()
 {
 	//InsertSort(a);
-	//HalfSort(a);
+	HalfSort(a);
 	//ShellSort(a);
-	BubbleSort(a, n);
+	//BubbleSort(a, n);
 	Show(a);
 	//QuickSort(a,0,n);
 	//ReverseT(a);

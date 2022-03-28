@@ -94,8 +94,8 @@ int main(int argc, char const *argv[])
 {
 	//char a[] = "man always remenber love becuase of remance only";
 	//char b[] = "remance";
-	char a[] = "ABDCABABCAC";
-	char b[] = "ABCA";
+	char a[] = "aaabaaabbbabaa";
+	char b[] = "babb";
 	int nextval[8];
 	mystr stra = init_mystr(a);
 	mystr strb = init_mystr(b);

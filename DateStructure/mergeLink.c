@@ -3,7 +3,7 @@
 
 typedef struct Node
 {
-	int data;
+	int val;
 	struct Node *next;
 }Node;
 
@@ -13,13 +13,13 @@ void initialist(Node **head)
 	(*head)->next = NULL;
 }
 
-void add_data(Node **tail, int *data, int n)
+void add_val(Node **tail, int *val, int n)
 {
 	Node *p = NULL;
 	for (int i = 0; i < n; ++i)
 	{
 		p = (Node *)malloc(sizeof(Node));
-		p->data = data[i];
+		p->val = val[i];
 		p->next = (*tail)->next;
 		(*tail)->next = p;
 		(*tail) = p;
@@ -31,63 +31,58 @@ void showlist(Node *head)
 	Node *p = head->next;
 	while(p->next!=NULL)
 	{
-		printf("%d ",p->data);
+		printf("%d ",p->val);
 		p = p->next;
 	}
-	printf("%d ",p->data);
+	printf("%d ",p->val);
 }
 
-void merge(Node *head_a, Node *head_b)
-{
-	//把两个有序链表合并为一个有序链表， 头节点不存放数据
-	Node *a = head_a->next, *b = head_b->next, *t, *pa = head_a;//a,b为遍历节点，pa是a的前驱节点.
-	free(head_b);
-	while(a->next != NULL && b != NULL) //当a的下一个节点，b节点都不为空时，将b中的元素插入a中，而b->next!=NULL,会遗留下b的最后一个节点未处理.
-	{									//这里若采用a！=NULL作为条件，在循环结束时a为NULL，pa为a链表的最后一个节点，没办法在pa节点之前插入数据.
-		if(a->data > b->data) //a>b,把b插入到a前面
-		{
-			t = b->next;
-			b->next = pa->next;
-			pa->next = b;
-			b = t;
-			pa = pa->next;
-		}
-		else if(a->data < b->data)//a<b，换下一个a
-		{
-			a = a->next;
-			pa = pa->next;
-		}
-		else //a==b，删除b节点，换下一个b
-		{
-			t = b;
-			b = b->next;
-			free(t);
-		}
-		//执行完毕可能的情况 1.不满足条件 b!= NULL，此时b为NULL，说明b中节点全部插入到a中，合并完成
-		// 2.不满足条件 a->next != NULL，此时a->next为NULL，a指向a链表的最后一个节点，b指向剩余b链表的第一个节点。还需要判断b的后续节点和a的最后一个节点的大小关系。
-	}
-	while(b != NULL) //若不满足条件2,确定b的后续节点和a的最后节点的次序
+ Node* mergeTwoLists(Node* list1, struct Node* list2){
+	//把两个有序链表合并为一个有序链表,头节点存放数据时
+    if(list1 == NULL && list2 == NULL) return NULL; 
+    if(list1 == NULL) return list2;
+    if(list2 == NULL) return list1;
+
+	//struct Node *a = list1->next, *b = list2->next, *t, *prea=list1; //如果带空头节点
+
+	struct Node *a = list1, *b = list2, *t, *prea=NULL;//a的前一个节点
+	while(b && a) 
 	{
-		if(a->data < b->data)//若a小于b的第一个节点，将b连在a后即可
-		{
-			a->next = b;
-			break;
-		}
-		else if(a->data > b->data) //若a>b，将b连在a前面，换下一个b
-		{
-			t = b->next;
-			b->next = pa->next;
-			pa->next = b;
-			b = t;
-			pa = pa->next;
-		}
-		else
+		if(a->val >= b->val) //a>b,把b插入到a前面
 		{
 			t = b;
-			b = b->next;
-			free(t);
+            b = b->next;
+            t->next = a;
+
+            if(!prea) {
+                prea = t;
+                list1 = t;  //更新 list1
+            }
+            else{
+                prea->next = t;
+                prea = t;
+            }
+
+			/* 如果带空头节点
+			prea->next = t;
+            prea = t;
+			 */
 		}
+		else //a<b，换下一个a
+		{
+            if(!prea) prea = a;
+            else prea = prea->next;
+            a = a->next;
+			/* 如果带空头节点
+			prea = prea->next;
+            a = a->next;
+			 */
+		}
+		//执行完毕可能的情况 1. b== NULL，说明b中节点全部插入到a中，合并完成
+		// 2. a == NULL，把b连到prea后面即可
 	}
+    if(!a) prea->next = b;
+    return list1;
 }
 
 void inverse(Node *head)
@@ -116,7 +111,7 @@ int find_Numk(Node *head, int k)
 	r = head;
 	for(i=0;i<n-k+1;i++)
 		r = r->next;
-	printf("%d\n", r->data);
+	printf("%d\n", r->val);
 }
 
 void reprint(Node *head)
@@ -125,7 +120,7 @@ void reprint(Node *head)
 	if(head->next != NULL)
 	{
 		reprint(head->next);
-		printf("%d ", head->next->data);
+		printf("%d ", head->next->val);
 	}
 }
 
@@ -145,8 +140,8 @@ int main()
 	initialist(&head_b);
 	tail_b = head_b;
 
-	add_data(&tail_a, a, sizeof(a)/sizeof(a[0]));
-	add_data(&tail_b, b, sizeof(b)/sizeof(b[0]));
+	add_val(&tail_a, a, sizeof(a)/sizeof(a[0]));
+	add_val(&tail_b, b, sizeof(b)/sizeof(b[0]));
 	//showlist(head_a);
 	//printf("\n");
 	//showlist(head_b);

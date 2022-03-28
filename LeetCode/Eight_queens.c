@@ -2,86 +2,68 @@
 #include <stdlib.h>
 
 // 
+int Check(int **queen, int x, int y, int n);
+void placeQueen(int **queen, int k, int n);
+void NQueen(int n);
 
-void Withdraw(int x, int y);
-void Mark(int x, int y);
-int Check(int x, int y);
 
-
-int queen[9][9];
-int n;
-void Init() {for (int i = 1; i < 9; i++) for (int j = 1; j < 9; j++) queen[i][j] = 0;}
-    
-void display() 
+void display(int **queen, int n) 
 {   
-    printf("\n %d \n",++n);
-    for (int i = 1; i < 9; i++)
+    static int k;
+    printf("\n %d \n",++k);
+    for (int i = 0; i < n; i++)
     {
-        for (int j = 1; j < 9; j++) 
-            printf(" %c",(queen[i][j]==9)?('H'):('-'));
+        for (int j = 0; j < n; j++) 
+            printf(" %c",(queen[i][j])?('O'):('+'));
         printf("\n");
     }
 }
 
-void placeQueen(int k)
-{
-    if(k>8) return;
-    int flag, i;
-    for (i = 1; i < 9; i++)
+void NQueen(int n){
+    int **queen = malloc(sizeof(int *)*n);
+    for (int i = 0; i < n; i++)
     {
-        flag = Check(k,i);
+        queen[i] = malloc(sizeof(int)*n);
+        for (int j = 0; j < n; j++) queen[i][j] = 0;
+    }
+    placeQueen(queen, 0, n);
+}
+
+void placeQueen(int **queen, int k, int n)
+{   
+    if (k==n){  //n个都放置完成，打印一次结果
+        display(queen, n);
+        return;
+    }
+    int flag, i;
+    for (i = 0; i < n; i++)
+    {
+        flag = Check(queen,k,i,n);
         if (!flag)
         {
-            Mark(k,i);
-            queen[k][i]=9;  // 占位
-            placeQueen(k+1);
-            if (k==8) display();
-            Withdraw(k,i);
+            queen[k][i]=1;  // 占位
+            placeQueen(queen,k+1,n);
+            queen[k][i]=0;  // 占位取消
         }
     }
 }
 
-int Check(int x, int y)
-{   //
-
+int Check(int **queen, int x, int y, int n)
+{   //行列或对角线已经有人了返回1, 否则返回0
     int i, k, l;
-    for (i = 0; i < 9; i++) if(queen[i][y]==9) return 1;
-    for (i = 0; i < 9; i++) if(queen[x][i]==9) return 1;
-    for (k=x,l=y; k<9 && l<9; k++,l++) if (queen[k][l]==9) return 1;
-    for (k=x,l=y; k>0 && l<9; k--,l++) if (queen[k][l]==9) return 1;
-    for (k=x,l=y; k>0 && l>0; k--,l--) if (queen[k][l]==9) return 1;
-    for (k=x,l=y; k<9 && l>0; k++,l--) if (queen[k][l]==9) return 1;
+    for (i = 0; i < n; i++) if(queen[i][y] || queen[x][i]) return 1;  //行列
+    for (k=x,l=y; k<n && l<n; k++,l++) if (queen[k][l]) return 1;
+    for (k=x,l=y; k>=0 && l<n; k--,l++) if (queen[k][l]) return 1;
+    for (k=x,l=y; k>=0 && l>=0; k--,l--) if (queen[k][l]) return 1;
+    for (k=x,l=y; k<n && l>=0; k++,l--) if (queen[k][l]) return 1;
 
     return 0;
 }
 
-void Mark(int x, int y)
-{
-    int i, k, l;
-    for (i = 0; i < 9; i++) queen[i][y]=1;
-    for (i = 0; i < 9; i++) queen[x][i]=1;
-    for (k=x,l=y; k<9 && l<9; k++,l++) queen[k][l]=1;
-    for (k=x,l=y; k>0 && l<9; k--,l++) queen[k][l]=1;
-    for (k=x,l=y; k>0 && l>0; k--,l--) queen[k][l]=1;
-    for (k=x,l=y; k<9 && l>0; k++,l--) queen[k][l]=1;
-}
-
-void Withdraw(int x, int y)
-{
-    int i, k, l;
-    for (i = 0; i < 9; i++) queen[i][y]=0;
-    for (i = 0; i < 9; i++) queen[x][i]=0;
-    for (k=x,l=y; k<9 && l<9; k++,l++) queen[k][l]=0;
-    for (k=x,l=y; k>0 && l<9; k--,l++) queen[k][l]=0;
-    for (k=x,l=y; k>0 && l>0; k--,l--) queen[k][l]=0;
-    for (k=x,l=y; k<9 && l>0; k++,l--) queen[k][l]=0;
-}
 
 
 int main(int argc, char const *argv[])
 {
-    Init();
-    //display();
-    placeQueen(1);
+    NQueen(5);
     return 0;
 }

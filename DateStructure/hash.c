@@ -17,7 +17,7 @@ typedef struct Node{    //  hash表内每个结点的数据结构。
 }LNode, *Linklist;
 
 
-int ELFhash(char *key){      // hash函数：著名的ELFhash算法。
+int ELFhash(char *key){      // hash函数
     unsigned long h = 0;
     while(*key){
         h = (h<<4) + *key++;
@@ -28,6 +28,17 @@ int ELFhash(char *key){      // hash函数：著名的ELFhash算法。
     return h % MOD;
 }
 
+int ELFhashInt(int *nums, int n){      // hash函数
+    unsigned long h = 0;
+    for (int i = 0; i < n; i++)
+    {
+        h = (h<<4) + nums[i++]*9999;
+        unsigned long g = h&0Xfedc0000L;
+        if(g) h ^= g>>24;
+        h &= ~g;
+    }
+    return h % 2147483647;
+}
 
 void add_date(LNode **tail, char *name, char *tel_num){   //  尾插法将数据添加到链表，并将tail指向最新的节点
     LNode *p = NULL;
@@ -38,6 +49,8 @@ void add_date(LNode **tail, char *name, char *tel_num){   //  尾插法将数据添加到
     (*tail) = p;
     p->next = NULL;
 }
+
+
 
 
 void add_record(char *name, LNode *tail, LNode *hashtable[]){   // 计算name的hash值，以hash值为数组下标储存数据Node地址

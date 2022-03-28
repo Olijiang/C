@@ -29,24 +29,37 @@ char *input()
 }
 
 
-int KHmatch(char *ch)
+int KHmatch(char *s)
 {
-    int i=0, top = -1;
-    char stack[20];
-    while (ch[i]!='\0')
-    {
-        if (ch[i] == '(' || ch[i] == '[')
-            stack[++top] = ch[i];
-        else
-        {
-            if (ch[i] == ')' && stack[top] == '(') top--;
-            else if (ch[i] == ']' && stack[top] == '[') top--;
-            else return 0;
-        }
-        i++;
+    char st[10000];
+    int top = -1;
+    for(int i=0; s[i]; i++){
+    if(top==-1){
+        if(s[i]==')' || s[i]==']' || s[i]=='}') return 0;
+        else st[++top] = s[i]; // »Î’ª
+        continue;
     }
-    if (top == -1) return 1;
-    else return 0;
+    if(s[i]==')')
+        if(st[top]=='('){
+            top--;
+            continue;
+        }
+        else return 0;
+    if(s[i]==']')
+        if(st[top]=='['){
+            top--;
+            continue;
+        }
+        else return 0;
+    if(s[i]=='}')
+        if(st[top]=='{'){
+            top--;
+            continue;
+        }
+        else return 0;
+    st[++top] = s[i];
+    }
+    return (top==-1)?1:0;
 }
 
 int main()

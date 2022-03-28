@@ -7,8 +7,6 @@
             "command": "D:\\SOFTWARE\\MinGW\\bin\\gcc.exe",     // ！！！*******自行修改 gcc
             "args": [
                 //"-fexec-charset=GBK",//这行参数可以指定可执行程序的编码方式，生成GBK编码的文件，默认UTF8在cmd窗口中会出现乱码
-                "-fsanitize=address",
-
                 "-g",
                 "${file}",
                 "-o",
